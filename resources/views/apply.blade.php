@@ -1,0 +1,21 @@
+@extends('layout')
+@section('title','Invia il tuo provino')
+@section('body-class','application-page')
+@section('content')
+<div class="application-layout"><aside class="application-intro"><a class="back-link" href="{{ route('home') }}">Torna alla pagina iniziale</a><h1>Il tuo provino<br><strong>per NERONE.</strong></h1><p>Presenta il tuo percorso artistico<br>e carica il video della tua esibizione.</p><div class="intro-note"><p>Il tuo video rimane riservato alla produzione. Il portale accetta candidature di maggiorenni.</p></div><figure class="application-photo"><img src="{{ asset('assets/nerone/teatro.jpg') }}" width="1376" height="768" alt="Immaginario scenico del progetto NERONE" loading="lazy"></figure></aside>
+<form class="audition-form" action="{{ route('audition.store') }}" method="post" enctype="multipart/form-data" data-upload-form>@csrf
+@if($errors->any())<div class="form-errors" role="alert"><strong>Controlla i campi indicati.</strong><ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul><p>Se avevi scelto un video, selezionalo nuovamente.</p></div>@endif
+<fieldset><legend>La tua presentazione</legend><div class="field-grid">
+<label>Nome<input name="first_name" value="{{ old('first_name') }}" autocomplete="given-name" maxlength="80" required></label>
+<label>Cognome<input name="last_name" value="{{ old('last_name') }}" autocomplete="family-name" maxlength="80" required></label>
+<label>Email<input type="email" name="email" value="{{ old('email') }}" autocomplete="email" maxlength="254" required></label>
+<label>Telefono<input type="tel" name="phone" value="{{ old('phone') }}" autocomplete="tel" maxlength="40" required></label>
+<label>Città<input name="city" value="{{ old('city') }}" autocomplete="address-level2" maxlength="100" required></label>
+<label>La tua disciplina<select name="discipline" required><option value="">Scegli una disciplina</option>@foreach($disciplines as $discipline)<option @selected(old('discipline')===$discipline)>{{ $discipline }}</option>@endforeach</select></label>
+</div><label class="full-field">Qualcosa di te <span>(facoltativo)</span><textarea name="presentation" rows="3" maxlength="2000" placeholder="Il tuo percorso, le tue esperienze, quello che vorresti farci conoscere.">{{ old('presentation') }}</textarea></label></fieldset>
+<fieldset class="video-fieldset" id="video"><legend>Il tuo video</legend><p class="video-guidance">Scegli una buona luce, un’inquadratura stabile e un ambiente silenzioso, in modo che possiamo vederti e ascoltarti chiaramente.</p><label class="file-drop" data-drop-zone><span class="upload-title" data-file-label>Scegli il tuo video</span><span class="file-hint">oppure trascinalo qui · MP4, MOV, WebM · massimo 50 MB</span><input type="file" name="video" accept="video/mp4,video/quicktime,video/webm,.mp4,.mov,.webm" required data-video-input aria-describedby="video-help"></label><p id="video-help" class="muted">Il video è conservato in un’area privata ed è visibile soltanto nell’area riservata alla produzione.</p><video class="upload-preview" controls playsinline hidden data-video-preview></video></fieldset>
+<div class="honeypot" aria-hidden="true"><label>Lascia vuoto questo campo<input name="website" tabindex="-1" autocomplete="off"></label></div>
+<label class="check-field"><input type="checkbox" name="adult" value="1" required @checked(old('adult'))><span>Confermo di avere almeno 18 anni.</span></label><label class="check-field"><input type="checkbox" name="consent" value="1" required @checked(old('consent'))><span>Ho letto le <a href="{{ route('privacy') }}" target="_blank" rel="noopener">informazioni sul trattamento dei dati</a> e acconsento al trattamento dei miei dati e del video per la valutazione della candidatura, come descritto nell’informativa.</span></label>
+<p class="privacy-note">I dati del titolare dell’informativa sono in aggiornamento e saranno completati prima dell’apertura al pubblico.</p><div class="submit-row"><p>Video e dati saranno inviati<br>insieme alla produzione.</p><button class="button primary" type="submit" data-submit>Invia il provino</button></div><div class="upload-status" role="status" aria-live="polite" hidden data-upload-status><progress max="100" value="0" aria-label="Caricamento video"></progress><span>Caricamento in corso…</span></div></form></div>
+@endsection
+
