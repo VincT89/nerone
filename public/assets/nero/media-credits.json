@@ -1,0 +1,36 @@
+[
+  {
+    "file": "teatro.jpg",
+    "url": "https://images.pexels.com/photos/10880679/pexels-photo-10880679.jpeg",
+    "source": "https://www.pexels.com/photo/interior-of-a-theater-10880679/",
+    "author": "Alari Tammsalu",
+    "bytes": 376325,
+    "license": "https://www.pexels.com/license/",
+    "usage": "Atmospheric stock imagery, not production photography"
+  },
+  {
+    "file": "sipario.jpg",
+    "url": "https://images.pexels.com/photos/33126413/pexels-photo-33126413.jpeg",
+    "source": "https://www.pexels.com/photo/elegant-interior-of-teatro-colon-in-buenos-aires-33126413/",
+    "author": "Valentina Rodriguez",
+    "bytes": 833980,
+    "license": "https://www.pexels.com/license/",
+    "usage": "Atmospheric stock imagery, not production photography"
+  },
+  {
+    "file": "platea.jpg",
+    "url": "https://images.pexels.com/photos/19987313/pexels-photo-19987313.jpeg?auto=compress&cs=srgb&w=1600",
+    "source": "https://www.pexels.com/photo/interior-of-vienna-state-opera-19987313/",
+    "author": "Marina Zvada",
+    "bytes": 932884,
+    "license": "https://www.pexels.com/license/",
+    "usage": "Atmospheric stock imagery, not production photography"
+  },
+  {
+    "file": "palchi.jpg",
+    "source": "https://www.pexels.com/photo/elegant-interior-of-classic-theater-auditorium-34824222/",
+    "author": "Eyden Lascombes dhotel",
+    "license": "https://www.pexels.com/license/",
+    "usage": "Atmospheric stock imagery, not production photography"
+  }
+]

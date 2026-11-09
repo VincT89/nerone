@@ -1,0 +1,52 @@
+/** Le azioni editoriali riprendono la tipografia del sito e distinguono navigazione e invio dei moduli. */
+body:not(.casting-page) .site-header .nav-links .nav-apply,
+.nero-home .cover-bottom>[data-open-trailer],
+body:not(.casting-page) .site-footer.footer-layout :is(.footer-film,.reserved-area),
+.nero-home .entry-film .film-skip,
+body:not(.casting-page) .back-to-top,
+.application-page .audition-form .local-captcha [data-captcha-renew]{
+    display:inline-flex;align-items:center;justify-content:flex-start;min-height:44px;max-width:100%;padding:10px 0;border:0;border-bottom:1px solid currentColor;border-radius:0;background:transparent;color:#d5e5ed;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;font-family:var(--sans);font-size:14px;font-weight:400;line-height:1.4;letter-spacing:0;text-decoration:none;cursor:pointer;
+}
+body:not(.casting-page) .site-header .nav-links .nav-apply{min-width:86px}
+.nero-home .cover-bottom>[data-open-trailer]{width:180px;text-align:left}
+.nero-home .nero-invitation-action>.nero-action-main{display:flex;align-items:center;justify-content:flex-start;width:min(340px,100%);min-height:64px;margin-top:38px;padding:12px 0;border:0;border-bottom:1px solid #c2d6dd;border-radius:0;background:transparent;color:#e2eef4;box-shadow:none;font-family:var(--sans);font-size:26px;line-height:1.3;letter-spacing:-.025em;text-decoration:none}
+.nero-home .nero-invitation-action>.nero-action-main:hover{color:#fff;border-bottom-color:#fff}
+body:not(.casting-page) .site-header .nav-links .nav-apply:hover,
+.nero-home .cover-bottom>[data-open-trailer]:hover,
+body:not(.casting-page) .site-footer.footer-layout :is(.footer-film,.reserved-area):hover,
+.nero-home .entry-film .film-skip:hover{color:#fff;border-bottom-color:#fff;background:transparent}
+body:not(.casting-page) .site-footer.footer-layout :is(.footer-film,.reserved-area){font-size:13px;line-height:1.4;width:auto;min-width:145px;padding:10px 0;color:#c2d6dd}
+body:not(.casting-page) .back-to-top{font-size:12px;min-width:70px;color:#2e4d5c;text-align:left;border-bottom-color:#7596a5}
+body:not(.casting-page) .back-to-top[data-on-dark=true]{color:#dbeaf2;border-bottom-color:#c2d6dd}
+body:not(.casting-page) .back-to-top:hover{background:transparent;color:#173541}
+body:not(.casting-page) .back-to-top[data-on-dark=true]:hover{color:#fff}
+.application-page .audition-form .local-captcha [data-captcha-renew]{color:#294b5b;font-size:13px;min-width:100px}
+.application-page .audition-form .submit-row>.button.primary,
+.casting-login-page .access-form .login-form>.button.primary{display:flex;align-items:center;justify-content:flex-start;min-height:54px;min-width:190px;padding:14px 20px;border:1px solid #8eafbf;border-radius:0;background:rgb(194 214 221 / .22);color:#193745;box-shadow:none;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);font-family:var(--sans);font-size:16px;font-weight:400;line-height:1.4;letter-spacing:0;text-align:left;text-decoration:none}
+.application-page .audition-form .submit-row>.button.primary:hover,
+.casting-login-page .access-form .login-form>.button.primary:hover{background:rgb(194 214 221 / .48);border-color:#466d80;color:#122d3a}
+.application-page .audition-form .submit-row>.button.primary:disabled{opacity:.6;cursor:not-allowed}
+.nero-home .trailer-dialog .dialog-header>[data-close-trailer]{display:grid;place-items:center;width:44px;min-width:44px;height:44px;padding:10px;border:0;border-radius:0;background:transparent;color:#e0edf4;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+.nero-home .trailer-dialog .dialog-header>[data-close-trailer]:hover{background:rgb(194 214 221 / .14)}
+body:not(.casting-page) :is(.nav-apply,[data-open-trailer],.reserved-area,.film-skip,.back-to-top,.nero-action-main,[data-captcha-renew],[data-close-trailer],.submit-row>.button,.login-form>.button):focus-visible{outline:2px solid #8ab3c7;outline-offset:5px}
+@media(max-width:750px){
+ body:not(.casting-page) .site-footer.footer-layout :is(.footer-film,.reserved-area){width:100%;min-width:0;font-size:12px}
+ .nero-home .nero-invitation-action>.nero-action-main{width:min(280px,100%);min-height:58px;margin-top:28px;font-size:23px}
+ .nero-home .cover-bottom>[data-open-trailer]{width:150px;font-size:13px}
+ .application-page .audition-form .submit-row{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;align-items:start}
+ .application-page .audition-form .submit-row>.button.primary{width:100%;min-width:0}
+}
+@media(max-height:500px) and (min-aspect-ratio:4/3){.nero-home .nero-invitation-action>.nero-action-main{margin-top:22px;min-height:54px;font-size:23px}}
+
+a.back-to-top.back-to-top-control{display:flex;align-items:center;justify-content:center;width:50px;height:50px;min-width:50px;min-height:50px;max-width:50px;padding:0;border:1px solid rgb(194 214 221 / .65);border-radius:50%;background:rgb(18 43 56 / .9);color:#e2f0f7;box-shadow:none;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);line-height:1;text-decoration:none}
+a.back-to-top.back-to-top-control svg{display:block;width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+a.back-to-top.back-to-top-control:hover{background:#183e51;color:#fff;border-color:#a9c7d6}
+a.back-to-top.back-to-top-control[data-on-dark=true]{background:rgb(194 214 221 / .86);color:#153341;border-color:rgb(229 244 250 / .85)}
+a.back-to-top.back-to-top-control[data-on-dark=true]:hover{background:#d9eaf2;color:#112d3b}
+a.back-to-top.back-to-top-control:focus-visible{outline:2px solid #71a2b9;outline-offset:4px}
+@media(max-width:750px){a.back-to-top.back-to-top-control{right:16px;bottom:16px;width:46px;height:46px;min-width:46px;min-height:46px;max-width:46px}}
+
+.site-footer.footer-layout .footer-top.footer-top-control{display:flex;align-items:center;justify-content:center;width:46px;height:46px;min-width:46px;min-height:46px;max-width:46px;padding:0;border:1px solid rgb(194 214 221 / .5);border-radius:50%;background:rgb(194 214 221 / .13);color:#d6e8f1;box-shadow:none;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);line-height:1;text-decoration:none}
+.site-footer.footer-layout .footer-top.footer-top-control svg{display:block;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.site-footer.footer-layout .footer-top.footer-top-control:hover{background:rgb(194 214 221 / .26);border-color:#c2d6dd;color:#fff}
+.site-footer.footer-layout .footer-top.footer-top-control:focus-visible{outline:2px solid #8bb4c9;outline-offset:4px}

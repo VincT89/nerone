@@ -1,28 +1,21 @@
 @extends('layout')
-@section('title','Sala casting')
+@section('title','Candidature')
 @section('body-class','casting-page casting-index')
 @section('casting-nav','yes')
 @section('content')
-<div class="casting-workflow">
-    @include('casting.navigation',['currentStatus'=>request('status')])
-    <section class="casting-desk" aria-label="Archivio dei provini">
-        <header class="desk-heading"><div><p>NERONE · Area di produzione</p><h1>Provini.</h1></div><a href="{{ route('home') }}#progetto">Rivedi il progetto</a></header>
-        @if(session('saved'))<p class="desk-notice" role="status">{{ session('saved') }}</p>@endif
-        <form class="desk-search" method="get" action="{{ route('casting.index') }}" role="search" aria-label="Cerca nei provini">
-            @if(request('status'))<input type="hidden" name="status" value="{{ request('status') }}">@endif
-            <label for="search">Cerca un candidato<input id="search" name="q" value="{{ request('q') }}" placeholder="Nome, cognome o città" maxlength="100"></label>
-            <label for="discipline-filter">Disciplina<select id="discipline-filter" name="discipline"><option value="">Tutte le discipline</option>@foreach($disciplines as $discipline)<option @selected(request('discipline')===$discipline)>{{ $discipline }}</option>@endforeach</select></label>
-            <button class="button primary" type="submit">Cerca</button>
-        </form>
-        <div class="desk-results-heading"><h2>{{ request('status') === 'Archiviato' ? 'Archiviati' : (request('status') ?: 'Tutti i provini') }}</h2>@if(request()->hasAny(['q','discipline']))<a href="{{ route('casting.index',array_filter(['status'=>request('status')])) }}">Azzera ricerca</a>@else<p>Più recenti</p>@endif</div>
-        @if($auditions->isNotEmpty())
-            <table class="candidate-table"><thead><tr><th>Candidato</th><th>Disciplina</th><th>Città</th><th>Selezione</th><th>Materiale</th><th>Visione</th></tr></thead><tbody>
-            @foreach($auditions as $audition)<tr class="candidate"><td><a class="candidate-name" href="{{ route('casting.show',$audition) }}">{{ $audition->first_name }} {{ $audition->last_name }}</a><p class="candidate-date">{{ $audition->created_at->format('d/m/Y') }}</p></td><td data-label="Disciplina">{{ $audition->discipline }}</td><td data-label="Città">{{ $audition->city }}</td><td data-label="Selezione"><span class="status-text">{{ $audition->status }}</span></td><td data-label="Materiale">{{ $audition->video_path ? 'Video disponibile' : 'Video non presente' }}</td><td><a class="open-audition" href="{{ route('casting.show',$audition) }}">Apri il provino<span class="sr-only"> di {{ $audition->first_name }} {{ $audition->last_name }}</span></a></td></tr>@endforeach
-            </tbody></table>
-        @else
-            <div class="casting-empty"><h2>{{ request()->hasAny(['q','discipline','status']) ? 'Nessun provino corrisponde alla ricerca.' : 'Ancora nessun provino.' }}</h2><p>{{ request()->hasAny(['q','discipline','status']) ? 'Scegli un altro stato della selezione o modifica la ricerca.' : 'Le candidature inviate dal modulo compaiono qui, insieme al video e ai contatti del candidato.' }}</p><a href="{{ request()->hasAny(['q','discipline','status']) ? route('casting.index') : route('audition.apply') }}">{{ request()->hasAny(['q','discipline','status']) ? 'Mostra tutti i provini' : 'Apri il modulo candidature' }}</a></div>
-        @endif
-        @if($auditions->hasPages())<nav class="pagination" aria-label="Pagine dei provini">@if($auditions->previousPageUrl())<a href="{{ $auditions->previousPageUrl() }}">Pagina precedente</a>@endif @if($auditions->nextPageUrl())<a href="{{ $auditions->nextPageUrl() }}">Pagina successiva</a>@endif</nav>@endif
-    </section>
+<div class="production-shell">@include('casting.navigation')
+    <header class="production-heading"><div><h1>Candidature</h1><p>{{ $selection?->title }} · {{ $auditions->total() }} {{ $auditions->total()===1?'risultato':'risultati' }}</p></div><div class="production-header-actions"><a class="today-applications" href="{{ route('casting.index',['received_from'=>$todayDate,'received_to'=>$todayDate]) }}" @if(request('received_from')===$todayDate && request('received_to')===$todayDate) aria-current="page" @endif aria-label="{{ $todayCount }} {{ $todayCount===1?'candidatura ricevuta':'candidature ricevute' }} oggi. Mostra le candidature di oggi."><span>Ricevute oggi</span><strong>{{ $todayCount }}</strong></a><a class="button" href="{{ route('audition.apply') }}" target="_blank" rel="noopener">Apri il modulo pubblico</a></div></header>
+    @include('candidate.errors')@if(session('saved'))<p class="production-notice" role="status">{{ session('saved') }}</p>@endif
+    <details class="production-role-details" @if(request('discipline')) open @endif><summary>Filtri di dettaglio</summary><nav class="production-roles" aria-label="Candidature per profilo">@foreach($roles as $value=>$label)<a href="{{ route('casting.index',['discipline'=>$value]) }}" @if(request('discipline')===$value) aria-current="page" @endif>{{ $label }} <strong>{{ $roleCounts[$value]??0 }}</strong></a>@endforeach</nav></details>
+    <form class="production-filters" method="get" action="{{ route('casting.index') }}" role="search">
+        <label>Candidato<input name="q" value="{{ request('q') }}" placeholder="Nome, cognome o città" maxlength="100"></label><label>Profilo<select name="discipline"><option value="">Tutti</option>@foreach($roles as $value=>$label)<option value="{{ $value }}" @selected(request('discipline')===$value)>{{ $label }}</option>@endforeach</select></label><label>Stato<select name="status"><option value="">Tutti</option>@foreach($statuses as $status)<option @selected(request('status')===$status)>{{ $status }}</option>@endforeach</select></label><label>Ricevuta dal<input type="date" name="received_from" value="{{ request('received_from') }}"></label><label>Ricevuta al<input type="date" name="received_to" value="{{ request('received_to') }}"></label><button class="button primary">Filtra</button>@if(request()->hasAny(['q','discipline','status','received_from','received_to']))<a href="{{ route('casting.index') }}">Azzera</a>@endif
+    </form>
+    @if($auditions->isNotEmpty())
+    <p class="table-scroll-hint">Sui dispositivi stretti puoi scorrere la tabella lateralmente.</p>
+    <div class="applications-scroll" tabindex="0" aria-label="Tabella candidature, scorrimento orizzontale disponibile"><table class="applications-table"><thead><tr><th>Foto</th><th>Candidato</th><th>Profilo</th><th>Stato</th><th>Voti produzione</th><th>Ricevuta</th><th>Materiale</th><th><span class="sr-only">Apri il dettaglio</span></th></tr></thead><tbody>
+        @foreach($auditions as $audition)<tr><td class="application-photo-cell">@if($audition->photo_path)<img src="{{ route('material.photo',$audition) }}" alt="Foto di {{ $audition->first_name }}" loading="lazy" width="52" height="64">@else<span>Assente</span>@endif</td><td class="application-name-cell"><a href="{{ route('casting.show',$audition) }}">{{ $audition->first_name }} {{ $audition->last_name }}</a><p>{{ $audition->city }}</p></td><td>{{ $roles[$audition->discipline]??$audition->discipline }}</td><td>{{ $audition->status }}</td><td><div class="vote-totals">@foreach(\App\Http\Controllers\AuditionReviewController::VOTES as $color=>$label)<span title="{{ $label }}"><i class="vote-light {{ $color }}" aria-hidden="true"></i><span class="sr-only">{{ $label }}:</span>{{ $audition->votes->where('color',$color)->count() }}</span>@endforeach</div></td><td>{{ $audition->created_at->timezone('Europe/Rome')->format('d/m/Y') }}</td><td>{{ $audition->videos_count + ($audition->video_path?1:0) }} video<br><span class="table-secondary">{{ $audition->comments_count }} commenti</span></td><td><a class="table-open" href="{{ route('casting.show',$audition) }}">Apri scheda<span class="sr-only"> di {{ $audition->first_name }} {{ $audition->last_name }}</span></a></td></tr>@endforeach
+    </tbody></table></div>
+    @else<p class="production-empty">Nessuna candidatura{{ request()->hasAny(['q','discipline','status','received_from','received_to'])?' corrisponde ai filtri selezionati':' ancora ricevuta' }}.</p>@endif
+    @if($auditions->hasPages())<nav class="pagination" aria-label="Pagine candidature">@if($auditions->previousPageUrl())<a href="{{ $auditions->previousPageUrl() }}">Precedente</a>@endif @if($auditions->nextPageUrl())<a href="{{ $auditions->nextPageUrl() }}">Successiva</a>@endif</nav>@endif
 </div>
 @endsection

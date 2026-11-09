@@ -1,5 +1,5 @@
 @extends('layout')
-@section('title','Provino ricevuto')
+@section('title','Candidatura ricevuta')
 @section('content')
-<section class="quiet-page"><h1>Il tuo provino<br>è stato ricevuto.</h1><p>La candidatura e il video sono stati registrati.<br>Grazie per averci fatto conoscere il tuo talento.</p><p class="muted">Riferimento della candidatura: {{ substr($reference,0,8) }}</p><a class="button primary" href="{{ route('home') }}">Torna alla pagina iniziale</a></section>
+<section class="quiet-page"><h1>La tua candidatura<br>è registrata.</h1><p>La produzione ha ricevuto il tuo profilo e i tre video.</p><p>Il materiale sarà valutato e, in caso di selezione, sarai contattato per il provino dal vivo ai recapiti che hai indicato.</p><p class="muted">Riferimento: {{ substr($reference,0,8) }}</p><a class="button primary" href="{{ route('home') }}#progetto">Torna al progetto</a></section>
 @endsection

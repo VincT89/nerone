@@ -3,29 +3,27 @@
 @section('body-class','casting-page casting-profile')
 @section('casting-nav','yes')
 @section('content')
-<div class="casting-workflow">
-    @include('casting.navigation',['currentStatus'=>$audition->status])
-    <section class="casting-desk candidate-desk">
-        <div class="viewing-top"><a href="{{ route('casting.index') }}">Tutti i provini</a><p>Ricevuto il {{ $audition->created_at->format('d/m/Y') }}</p></div>
-        <header class="viewing-heading"><h1>{{ $audition->first_name }} {{ $audition->last_name }}</h1><p>{{ $audition->discipline }} · {{ $audition->city }}</p></header>
-        <div class="viewing-workspace">
-            <div class="viewing-material">
-                @if($audition->video_path)<video class="audition-player" controls playsinline preload="metadata" aria-label="Video del provino di {{ $audition->first_name }}"><source src="{{ route('casting.video',$audition) }}" type="{{ $audition->video_mime }}">Il browser non supporta questo video.</video>@else<div class="video-empty"><h2>Video non presente</h2><p>Puoi associare un video alla candidatura.</p></div>@endif
-                <details class="attach-video"><summary>{{ $audition->video_path ? 'Sostituisci il video' : 'Aggiungi un video' }}</summary><form method="post" action="{{ route('casting.attach',$audition) }}" enctype="multipart/form-data">@csrf<label>MP4, MOV o WebM · massimo 50 MB<input type="file" name="video" accept=".mp4,.mov,.webm" required></label><button class="button primary">Associa il video</button></form></details>
-                <section class="candidate-story"><h2>La presentazione</h2><p>{{ $audition->presentation ?: 'Il candidato non ha aggiunto una presentazione.' }}</p><dl><div><dt>Email</dt><dd><a href="mailto:{{ $audition->email }}">{{ $audition->email }}</a></dd></div><div><dt>Telefono</dt><dd>{{ $audition->phone }}</dd></div></dl></section>
+<div class="production-shell dossier-shell">
+    @include('casting.navigation')
+    @include('candidate.errors')
+    <div class="dossier-cover"><a class="dossier-folder-tab" href="{{ route('casting.index') }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>Candidature</a>@if(session('saved'))<p class="dossier-save-note" role="status">{{ session('saved') }}</p>@endif</div>
+    <article class="candidate-dossier" aria-labelledby="candidate-name">
+        <div class="dossier-split">
+            <div class="dossier-mainpane" tabindex="0" aria-label="Profilo e video del candidato">
+                <section class="dossier-profile" id="profilo" aria-labelledby="candidate-name">
+                    <figure class="dossier-photo">@if($audition->photo_path)<img src="{{ route('material.photo',$audition) }}" alt="Foto di {{ $audition->first_name }} {{ $audition->last_name }}">@else<div>Foto non allegata</div>@endif</figure>
+                    <div class="dossier-identity"><h1 id="candidate-name">{{ $audition->first_name }} {{ $audition->last_name }}</h1><dl class="dossier-data"><div><dt>Profilo artistico</dt><dd>{{ \App\Http\Controllers\AuditionController::ROLES[$audition->discipline]??$audition->discipline }}</dd></div><div><dt>Città</dt><dd>{{ $audition->city }}</dd></div><div><dt>Email</dt><dd><a href="mailto:{{ $audition->email }}">{{ $audition->email }}</a></dd></div><div><dt>Telefono</dt><dd><a href="tel:{{ preg_replace('/[^+0-9]/','',$audition->phone) }}">{{ $audition->phone }}</a></dd></div><div><dt>Ricevuta il</dt><dd>{{ $audition->created_at->timezone('Europe/Rome')->format('d/m/Y · H:i') }}</dd></div><div><dt>Selezione</dt><dd>{{ $audition->selection?->title }}</dd></div></dl></div>
+                </section>
+                <details class="dossier-summary"><summary>Presentazione</summary><p>{{ $audition->presentation?:'Nessuna presentazione aggiunta.' }}</p>@if($audition->notes)<p>Annotazioni precedenti: {{ $audition->notes }}</p>@endif</details>
+                @include('casting.dossier-videos')
+                <div class="dossier-bottom-actions"><a href="{{ route('casting.index') }}">Torna alle candidature</a><a href="{{ route('casting.confirm-delete',$audition) }}">Elimina candidatura</a></div>
             </div>
-            <aside class="evaluation-panel">
-                <form method="post" action="{{ route('casting.update',$audition) }}" data-evaluation-form>@csrf @method('PATCH')<h2>La valutazione.</h2><p>Note riservate alla produzione.</p>
-                    @if(session('saved'))<div class="saved-message" role="status">{{ session('saved') }}</div>@endif
-                    @if($errors->any())<div class="form-errors" role="alert">@foreach($errors->all() as $error)<p>{{ $error }}</p>@endforeach</div>@endif
-                    <label for="candidate-status">Stato della candidatura</label><select id="candidate-status" name="status">@foreach($statuses as $status)<option @selected(old('status',$audition->status)===$status)>{{ $status }}</option>@endforeach</select>
-                    <label for="candidate-notes">Note riservate</label><textarea id="candidate-notes" name="notes" rows="9" maxlength="10000" placeholder="Interpretazione, presenza, aspetti da approfondire…">{{ old('notes',$audition->notes) }}</textarea>
-                    <p class="evaluation-state" data-evaluation-state role="status" aria-live="polite"></p>
-                    <button class="button primary">Salva la valutazione</button><p class="muted">Le note non vengono inviate al candidato.</p>
-                </form>
-                <div class="delete-candidate"><a href="{{ route('casting.confirm-delete',$audition) }}">Elimina candidatura</a></div>
+            <aside class="dossier-side" tabindex="0" aria-label="Stato, voti e commenti della produzione">
+                <form class="dossier-status" action="{{ route('casting.update',$audition) }}" method="post">@csrf @method('PATCH')<label for="dossier-status">Stato<select id="dossier-status" name="status">@foreach($statuses as $status)<option @selected(old('status',$audition->status)===$status)>{{ $status }}</option>@endforeach</select></label><button class="button primary">Salva stato</button></form>
+                @include('casting.dossier-votes')
+                @include('casting.dossier-comments')
             </aside>
         </div>
-    </section>
+    </article>
 </div>
 @endsection
