@@ -54,6 +54,27 @@ class CandidateWorkflowTest extends TestCase {
     }
     private function operator(bool $admin=false): User {$user=new User;$user->forceFill(['name'=>'Valutatore '.Str::random(5),'email'=>Str::lower(Str::random(10)).'@example.test','password'=>Str::random(28).'a1','is_casting_operator'=>true,'is_casting_admin'=>$admin])->save();return $user;}
     private function audition(string $email='persona@example.test'): Audition {$this->post('/candidati',$this->payload($email))->assertRedirect();return Audition::where('email',$email)->firstOrFail();}
+
+    public function test_indexing_is_allowed_only_for_public_pages_in_production(): void
+    {
+        $reference = Str::uuid()->toString();
+        DB::table('auditions')->insert([
+            'reference' => $reference, 'first_name' => 'Persona', 'last_name' => 'Artistica',
+            'email' => 'candidatura@example.test', 'phone' => '0000000000', 'city' => 'Roma',
+            'discipline' => 'ensemble', 'created_at' => now(), 'updated_at' => now(),
+        ]);
+
+        $this->get('/')->assertOk()->assertHeader('X-Robots-Tag', 'noindex, nofollow');
+        $this->app->instance('env', 'production');
+
+        foreach (['/', '/candidati', '/privacy', '/cookie'] as $url) {
+            $this->get($url)->assertOk()->assertHeaderMissing('X-Robots-Tag')->assertDontSee('name="robots"', false);
+        }
+        $this->get('/login')->assertOk()->assertHeader('X-Robots-Tag', 'noindex, nofollow');
+        $this->get(route('audition.received', $reference))->assertOk()->assertHeader('X-Robots-Tag', 'noindex, nofollow');
+        $this->actingAs($this->operator())->get('/casting')->assertOk()->assertHeader('X-Robots-Tag', 'noindex, nofollow');
+    }
+
     public function test_today_badge_uses_the_italian_day_and_current_selection(): void {
         \Carbon\CarbonImmutable::setTestNow(\Carbon\CarbonImmutable::parse('2026-11-09 12:00:00','Europe/Rome'));
         try {

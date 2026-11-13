@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="robots" content="noindex, nofollow">
     <meta name="description" content="NERO! Nuovo musical in preparazione a Roma. Informazioni su audizioni, profili ricercati e candidature online.">
     <title>@yield('title', 'Il progetto') · NERO</title>
     <link rel="icon" href="data:,">

@@ -63,4 +63,8 @@ Il worker della coda `self-tapes` usa il database e si arresta a coda vuota oppu
 
 Il titolare indicato è Nero Musical srl. Completare in `config/casting.php` il recapito ufficiale e aggiornare nell'informativa privacy le informazioni sull'hosting effettivo prima dell'apertura. I link **Privacy** e **Cookie** sono nel footer. La cookie policy descrive i cookie tecnici e la memoria della scheda usata per il trailer. [Linee guida del Garante sui cookie](https://www.garanteprivacy.it/home/docweb/-/docweb-display/docweb/9677876)
 
-Il layout include `noindex, nofollow`. Prima di pubblicare, confermare se il sito deve essere indicizzato.
+## Indicizzazione
+
+Con `APP_ENV=production` la home, la pagina delle candidature e le informative sono indicizzabili. Il login, il gestionale e le ricevute di candidatura restano esclusi tramite `X-Robots-Tag`. Negli ambienti di prova Laravel invia la stessa direttiva su tutte le pagine.
+
+Dopo la pubblicazione del sottodominio HTTPS, verificare la proprietà in Google Search Console e richiedere l'indicizzazione della home e della pagina delle candidature. [Richiedere la scansione a Google](https://developers.google.com/search/docs/crawling-indexing/ask-google-to-recrawl)
