@@ -1,9 +1,15 @@
-@props(['project', 'opensAt', 'auditionMonth'])
+@props(['project', 'opensAt', 'deadline', 'isOpen', 'isUpcoming', 'auditionMonth'])
 
 <dl {{ $attributes->class('casting-calendar') }}>
     <div>
         <dt>Candidature online</dt>
-        <dd>Dal <x-casting-opening-time :opens-at="$opensAt" /></dd>
+        @if($isUpcoming)
+            <dd>Dal <x-casting-opening-time :opens-at="$opensAt" /></dd>
+        @elseif($isOpen)
+            <dd>Aperte @if($deadline) fino al <x-casting-opening-time :opens-at="$deadline" :show-time="true" />@endif</dd>
+        @else
+            <dd>Chiuse</dd>
+        @endif
     </div>
     <div>
         <dt>Audizioni in presenza</dt>

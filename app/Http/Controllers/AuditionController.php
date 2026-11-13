@@ -29,10 +29,11 @@ class AuditionController extends Controller {
     {
         $selection = Selection::with('phases')->latest('id')->first();
 
-        return view('home', [
+        return response()->view('home', [
             ...$calendar->status($selection),
+            'auditionMonth'=>$calendar->auditionMonth(),
             'project'=>config('casting.project'),
-        ]);
+        ])->header('Cache-Control','no-store');
     }
 
     public function apply(Request $request, AuditionUploadGuard $uploads, CastingCalendar $calendar)
@@ -42,6 +43,7 @@ class AuditionController extends Controller {
 
         return response()->view('apply', [
             ...$status,
+            'auditionMonth'=>$calendar->auditionMonth(),
             'roles'=>config('audition_roles'),
             'selection'=>$selection,
             'project'=>config('casting.project'),

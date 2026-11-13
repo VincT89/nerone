@@ -8,10 +8,7 @@ class Selection extends Model {
     public function phases(){return $this->hasMany(SelectionPhase::class)->orderBy('position');}
     public function acceptsApplications(): bool
     {
-        /** La data annunciata è il primo giorno utile anche quando il gestionale è già abilitato. */
-        return $this->is_open
-            && app(CastingCalendar::class)->permitsIntake()
-            && ($this->phases->first()?->acceptsMaterials() ?? false);
+        return app(CastingCalendar::class)->status($this)['isOpen'];
     }
     public function auditions(){return $this->hasMany(Audition::class);}
 }

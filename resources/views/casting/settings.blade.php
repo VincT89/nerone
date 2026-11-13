@@ -10,7 +10,7 @@
         <label>Aperta dal<input type="datetime-local" name="starts_at" value="{{ old('starts_at',$selection->phases->first()?->starts_at?->timezone('Europe/Rome')->format('Y-m-d\TH:i')) }}"></label>
         <label>Aperta fino al<input type="datetime-local" name="ends_at" value="{{ old('ends_at',$selection->phases->first()?->ends_at?->timezone('Europe/Rome')->format('Y-m-d\TH:i')) }}"></label>
     </div>
-    <p>Gli invii possono aprire dal <time datetime="{{ $openingDate->toDateString() }}">{{ $openingDate->locale('it')->isoFormat('D MMMM YYYY') }}</time>. Le date e gli orari qui impostati seguono l’ora italiana.</p>
+    <p>Se lasci vuoto «Aperta dal», si usa il <time datetime="{{ $openingDate->toDateString() }}">{{ $openingDate->locale('it')->isoFormat('D MMMM YYYY') }}</time>. Le date e gli orari seguono l’ora italiana.</p>
     <input type="hidden" name="is_open" value="0"><label class="check-field"><input type="checkbox" name="is_open" value="1" @checked(old('is_open',$selection->is_open))><span>Consenti l’invio delle candidature nel periodo indicato.</span></label>
     <button class="button primary">Salva apertura</button>
 </form></div>

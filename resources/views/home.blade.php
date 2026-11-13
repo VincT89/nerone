@@ -19,7 +19,7 @@
         <div class="nero-casting-copy">
             <h2 id="casting-title">Audizioni</h2>
             <p>{{ $project['description'] }} Le candidature si presentano esclusivamente online tramite il modulo.</p>
-            <x-casting-calendar :project="$project" :opens-at="$opensAt" :audition-month="$auditionMonth" />
+            <x-casting-calendar :project="$project" :opens-at="$opensAt" :deadline="$deadline" :is-open="$isOpen" :is-upcoming="$isUpcoming" :audition-month="$auditionMonth" />
             <h3>Profili ricercati</h3>
             <p>{{ $project['profiles'] }}</p>
         </div>

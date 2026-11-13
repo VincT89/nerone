@@ -25,9 +25,11 @@ La home e il gestionale caricano direttamente i file in `public/assets` e si apr
 
 ## Candidature
 
-Il modulo è consultabile prima dell'apertura annunciata del 17 novembre 2026. Da **Apertura audizioni** gli amministratori possono regolare la selezione, l'apertura e la chiusura. I campi orari del gestionale usano l'ora italiana.
+La home e il modulo seguono lo stato, la data di apertura e la scadenza salvati in **Apertura audizioni**. Se il campo di apertura è vuoto, si usa il 17 novembre 2026. Le date e gli orari impostati nel gestionale seguono l'ora italiana. Prima dell'apertura e dopo la chiusura il modulo resta consultabile.
 
 La candidatura richiede un self-tape fino a 5 minuti e 100 MB, il curriculum in PDF e due foto recenti. L'invio è protetto da un CAPTCHA locale e limitato a una candidatura completata per connessione ogni ora. Foto, video e documenti vengono conservati nello spazio privato dell'applicazione. Gli operatori autorizzati consultano, filtrano, commentano e votano le candidature. Gli amministratori possono eliminarle con conferma esplicita. Se un allegato non viene rimosso, la cancellazione resta in sospeso e si può riprendere dal gestionale.
+
+Per collaudare il gestionale, caricare `foto-primo-piano.jpg`, `foto-figura-intera.jpg`, `cv-prova-nero.pdf` e `self-tape-prova-nero.mp4` in `storage/app/private/prova-nero`. Su Plesk, nella scheda **Artisan**, inserire `db:seed --class=ProvaNeroSeeder --force`. Il comando crea una sola scheda fittizia **Prova Nero**. La cancellazione della scheda dal gestionale rimuove anche i quattro file. Per verificare CAPTCHA, invio e conversione video, usare il modulo pubblico durante un periodo di apertura.
 
 ## Accesso della produzione
 

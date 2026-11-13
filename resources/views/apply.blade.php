@@ -16,7 +16,7 @@
             @elseif(!$isOpen)
                 <p class="intro-note"><strong>Candidature chiuse</strong></p>
             @elseif($deadline)
-                <p class="intro-note"><strong>Scadenza candidature</strong><br><time datetime="{{ $deadline->toIso8601String() }}">{{ $deadline->format('d/m/Y · H:i') }}</time> (ora italiana)</p>
+                <p class="intro-note"><strong>Scadenza candidature</strong><br><x-casting-opening-time :opens-at="$deadline" :show-time="true" /></p>
             @endif
             <nav class="application-index" aria-label="Sezioni della candidatura">
                 <a href="#dati-personali">Dati personali</a>
@@ -30,7 +30,7 @@
     </header>
     <div class="application-content">
         <section class="application-overview" aria-labelledby="selection-path">
-            <x-casting-calendar :project="$project" :opens-at="$opensAt" :audition-month="$auditionMonth" />
+            <x-casting-calendar :project="$project" :opens-at="$opensAt" :deadline="$deadline" :is-open="$isOpen" :is-upcoming="$isUpcoming" :audition-month="$auditionMonth" />
             <div class="application-overview-copy">
                 <h2 id="selection-path">Il percorso di selezione</h2>
                 <p>Le candidature si presentano esclusivamente online tramite questo modulo. Prepara una presentazione in inglese, una prova di canto, un monologo e, solo per performer, una prova coreografica.</p>
