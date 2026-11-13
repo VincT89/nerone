@@ -10,17 +10,37 @@ Usare un runtime PHP che includa le correzioni ufficiali di sicurezza, con le es
 
 La connessione al database, la chiave dell'applicazione e le impostazioni dell'ambiente sono in `.env`, che deve restare privato. Il server deve esporre esclusivamente `public`.
 
-Da questa cartella, con il runtime corretto disponibile:
+Da un terminale aperto in questa cartella, verificare che PHP carichi il driver MySQL:
 
 ```sh
-php artisan serve --host=127.0.0.1 --port=8741
+php --ri pdo_mysql
 ```
 
-Per avviare su questo computer da Git Bash: `bash avvia.sh`. Da PowerShell: `./avvia.ps1`. Questi comandi selezionano il runtime portatile aggiornato gia predisposto fuori dal progetto; non cambiano il PHP del sistema. Su altri computer impostare `PHP_BIN` oppure fornire `-PhpPath` a PowerShell. La porta predefinita e 8741.
+Avviare Laravel con il comando standard di Artisan e aprire l’indirizzo mostrato nel terminale:
+
+```sh
+php artisan serve
+```
 
 Il video di ingresso usa il filmato originale completo, con data finale e audio richiesto alla partenza. Se il browser blocca l audio automatico, un tocco sul video lo attiva. Non ci sono pulsanti sovrapposti: il video si puo mettere in pausa toccandolo o con Spazio, M gestisce l audio ed Esc apre la pagina. Il collegamento per saltare il film diventa visibile con la navigazione da tastiera. La preferenza di movimento ridotto evita l ingresso automatico. La memoria della scheda evita di ripetere il film a ogni ritorno. Logo, immagini e subset del carattere derivano dal PDF fornito.
 
 ## Casting
+
+La scheda NERO accetta un self-tape di massimo 5 minuti e 100 MB, il curriculum PDF e due foto. Gli allegati vengono conservati su storage privato e sono disponibili nella scheda di produzione. Applicare la migrazione `2026_11_12_100000_add_application_details_to_auditions.php` per salvare i nuovi campi.
+
+Per l'invio, il PHP che esegue il sito deve consentire `upload_max_filesize=100M` e `post_max_size=160M` oppure limiti superiori. Il controllo della durata richiede FFmpeg disponibile nel PATH del processo PHP oppure indicato in `CASTING_FFMPEG_BINARY`.
+
+Dopo aver applicato le migrazioni, impostare in Plesk una singola attività che esegua `artisan schedule:run` ogni minuto. Selezionare la versione PHP del sito, inviare un provino di prova e usare «Esegui ora» per verificare che FFmpeg produca l'MP4. La coda `self-tapes` usa il database dell'applicazione.
+
+```sh
+php artisan schedule:run
+```
+
+Il candidato riceve subito la conferma dell'invio. Il worker prepara l'MP4 con un obiettivo indicativo del 40% in meno, conserva l'audio AAC quando possibile e mantiene disponibile il file ricevuto se la conversione non riesce. Gli MP4 già leggeri vengono conservati se la ricodifica non riduce il peso.
+
+Lo scheduler avvia un solo worker `self-tapes` alla volta. Il worker si ferma a coda vuota oppure, dopo cinque minuti, al termine del lavoro in corso. Il blocco dello scheduler usa la cache di Laravel e scade dopo 30 minuti. Usare un solo meccanismo di avvio per questa coda.
+
+La coda consente fino a quattro tentativi, con attese di 15, 45 e 120 secondi. Se l'esecuzione termina con un errore prima che Laravel riesca a rimuovere o rilasciare la prenotazione, il worker la rende nuovamente disponibile appena il database risponde. Se il processo si arresta di colpo, la prenotazione scade dopo 20 minuti e il primo worker disponibile riprende il lavoro.
 
 Il login richiede un account esistente con il permesso di operatore casting. Non sono presenti registrazione o configurazione pubbliche. L'impostazione `CASTING_LOCAL_ACCESS_ONLY` mantiene l'area riservata limitata al computer locale.
 

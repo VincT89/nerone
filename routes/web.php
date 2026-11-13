@@ -2,12 +2,10 @@
 use App\Http\Controllers\{AuditionController,AuditionReviewController,CastingAuthController,ProductionTeamController,SingleSelectionController,UnifiedAuthController,MaterialController};
 use App\Http\Middleware\CastingAccess;
 use Illuminate\Support\Facades\Route;
-Route::view('/','home')->name('home');
-Route::get('/candidati',[AuditionController::class,'apply'])->name('audition.apply');
+Route::get('/',[AuditionController::class,'home'])->name('home');
+Route::get('/candidati',[AuditionController::class,'apply'])->middleware('throttle:30,1,captcha-form')->name('audition.apply');
 Route::post('/candidati/captcha',[\App\Http\Controllers\LocalCaptchaController::class,'renew'])->middleware('throttle:15,1,captcha-renew')->name('audition.captcha.renew');
-Route::get('/candidati/captcha/{challenge}/immagine',[\App\Http\Controllers\LocalCaptchaController::class,'image'])->where('challenge','[A-Za-z0-9]{32}')->middleware('throttle:30,1,captcha-image')->name('audition.captcha.image');
-Route::get('/candidati/captcha/{challenge}/audio',[\App\Http\Controllers\LocalCaptchaController::class,'audio'])->where('challenge','[A-Za-z0-9]{32}')->middleware('throttle:15,1,captcha-audio')->name('audition.captcha.audio');
-Route::post('/candidati',[AuditionController::class,'store'])->middleware('throttle:8,1,applications')->name('audition.store');
+Route::post('/candidati',[AuditionController::class,'store'])->middleware('throttle:audition-uploads')->name('audition.store');
 Route::get('/ricevuto/{reference}',[AuditionController::class,'received'])->whereUuid('reference')->name('audition.received');
 Route::view('/privacy','privacy')->name('privacy');
 Route::view('/cookie','cookies')->name('cookies');
@@ -16,19 +14,25 @@ Route::post('/login',[UnifiedAuthController::class,'enter'])->middleware('thrott
 Route::redirect('/casting/accesso','/login');
 Route::middleware(CastingAccess::class)->prefix('casting')->name('casting.')->group(function(){
     Route::get('/',[AuditionController::class,'index'])->name('index');
-    Route::get('/provini/{audition}',[AuditionController::class,'show'])->name('show');
-    Route::patch('/provini/{audition}',[AuditionController::class,'update'])->name('update');
+    Route::middleware('can:review-audition,audition')->group(function () {
+        Route::get('/provini/{audition}',[AuditionController::class,'show'])->name('show');
+        Route::get('/provini/{audition}/foto-intera',[MaterialController::class,'fullPhoto'])->name('full-photo');
+        Route::get('/provini/{audition}/cv',[MaterialController::class,'cv'])->name('cv');
+        Route::patch('/provini/{audition}',[AuditionController::class,'update'])->name('update');
+        Route::get('/provini/{audition}/video',[AuditionController::class,'video'])->name('video');
+        Route::get('/provini/{audition}/commenti',[AuditionReviewController::class,'comments'])->name('comments');
+        Route::post('/provini/{audition}/commenti',[AuditionReviewController::class,'comment'])->middleware('throttle:30,1,comments')->name('comments.store');
+        Route::patch('/provini/{audition}/voto',[AuditionReviewController::class,'vote'])->middleware('throttle:30,1,votes')->name('votes.store');
+    });
     Route::get('/video/{video}',[AuditionReviewController::class,'video'])->name('videos.watch');
-    Route::get('/provini/{audition}/video',[AuditionController::class,'video'])->name('video');
-    Route::get('/provini/{audition}/commenti',[AuditionReviewController::class,'comments'])->name('comments');
-    Route::post('/provini/{audition}/commenti',[AuditionReviewController::class,'comment'])->middleware('throttle:30,1,comments')->name('comments.store');
-    Route::patch('/provini/{audition}/voto',[AuditionReviewController::class,'vote'])->middleware('throttle:30,1,votes')->name('votes.store');
-    Route::get('/impostazioni',[SingleSelectionController::class,'index'])->name('settings');
-    Route::patch('/impostazioni',[SingleSelectionController::class,'update'])->name('settings.update');
+    Route::middleware('can:manage-casting')->group(function () {
+        Route::get('/impostazioni',[SingleSelectionController::class,'index'])->name('settings');
+        Route::patch('/impostazioni',[SingleSelectionController::class,'update'])->name('settings.update');
+        Route::get('/provini/{audition}/elimina',[AuditionController::class,'confirmDelete'])->name('confirm-delete');
+        Route::delete('/provini/{audition}',[AuditionController::class,'destroy'])->name('destroy');
+    });
     Route::get('/collaboratori',[ProductionTeamController::class,'index'])->name('team');
     Route::post('/collaboratori',[ProductionTeamController::class,'store'])->middleware('throttle:6,1,team')->name('team.store');
-    Route::get('/provini/{audition}/elimina',[AuditionController::class,'confirmDelete'])->name('confirm-delete');
-    Route::delete('/provini/{audition}',[AuditionController::class,'destroy'])->name('destroy');
     Route::post('/esci',[CastingAuthController::class,'logout'])->name('logout');
 });
 Route::get('/candidature/{audition}/foto',[MaterialController::class,'photo'])->name('material.photo');

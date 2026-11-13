@@ -11,6 +11,7 @@ body:not(.casting-page) .site-header .nav-links .nav-apply{min-width:86px}
 .nero-home .cover-bottom>[data-open-trailer]{width:180px;text-align:left}
 .nero-home .nero-invitation-action>.nero-action-main{display:flex;align-items:center;justify-content:flex-start;width:min(340px,100%);min-height:64px;margin-top:38px;padding:12px 0;border:0;border-bottom:1px solid #c2d6dd;border-radius:0;background:transparent;color:#e2eef4;box-shadow:none;font-family:var(--sans);font-size:26px;line-height:1.3;letter-spacing:-.025em;text-decoration:none}
 .nero-home .nero-invitation-action>.nero-action-main:hover{color:#fff;border-bottom-color:#fff}
+.nero-home .nero-invitation-action>.nero-application-status+.nero-action-main{margin-top:12px}
 body:not(.casting-page) .site-header .nav-links .nav-apply:hover,
 .nero-home .cover-bottom>[data-open-trailer]:hover,
 body:not(.casting-page) .site-footer.footer-layout :is(.footer-film,.reserved-area):hover,
@@ -50,3 +51,70 @@ a.back-to-top.back-to-top-control:focus-visible{outline:2px solid #71a2b9;outlin
 .site-footer.footer-layout .footer-top.footer-top-control svg{display:block;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .site-footer.footer-layout .footer-top.footer-top-control:hover{background:rgb(194 214 221 / .26);border-color:#c2d6dd;color:#fff}
 .site-footer.footer-layout .footer-top.footer-top-control:focus-visible{outline:2px solid #8bb4c9;outline-offset:4px}
+.application-page .application-layout{display:block;max-width:none;padding:0 0 clamp(44px,7vw,100px)}
+.application-page .site-header>nav{width:100%;margin:0;justify-content:space-between}
+.application-page .site-header .nav-back-project{color:#fff;text-decoration:underline;text-underline-offset:4px}
+.application-page .application-intro{position:relative;top:auto;isolation:isolate;display:flex;align-items:flex-end;min-height:clamp(300px,34vw,550px);background:#111;color:#fff}
+.application-page .application-intro-copy{position:relative;width:100%;padding:clamp(20px,3.2vw,44px) clamp(20px,5vw,80px);text-shadow:0 1px 3px #000,0 2px 12px #000}
+.application-page .application-intro h1{font-size:clamp(36px,5.1vw,84px);font-weight:400;letter-spacing:-.06em;line-height:1.02;margin:20px 0 14px}
+.application-page .application-intro-copy>p{color:#fff;font-size:clamp(17px,1.4vw,21px);font-weight:500;line-height:1.45}
+.application-page .application-intro .intro-note{max-width:none;border-color:#555;padding-top:12px;margin-top:16px}
+.application-page .application-photo{position:absolute;inset:0;z-index:-1;margin:0;max-width:none;overflow:hidden}
+.application-page .application-photo img{display:block;width:100%;height:100%;max-height:none;object-fit:cover;object-position:center 52%;filter:url("#nero-glass-photo") brightness(.55)}
+.application-page .application-content{width:min(100%,1300px);margin-inline:auto;padding:26px clamp(20px,5vw,75px) 0}
+.application-page .application-contact-note{margin:0 0 20px;font-size:14px;line-height:1.5;color:#414141}
+.application-page .application-index{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));column-gap:clamp(14px,2.6vw,36px);margin-top:26px}
+.application-page .application-index a{display:flex;align-items:center;min-height:48px;padding:7px 0;border-top:1px solid rgb(255 255 255 / .68);color:#fff;font-size:clamp(16px,1.3vw,19px);font-weight:650;line-height:1.25;text-underline-offset:4px}
+.application-page .application-index a:hover{text-decoration:underline}
+.application-page .application-intro a:focus-visible{outline-color:#d6e5e9}
+.application-page .application-required{margin:0 0 30px;font-size:13px;color:#4b4b4b}
+.application-page .application-section{min-width:0;margin:0;padding:18px 0 0;border:0;border-top:1px solid #aaa;scroll-margin-top:25px}
+.application-page .application-section+.application-section{margin-top:42px}
+.application-page .application-section>legend{padding-right:14px;margin:0;color:#141414;font-size:clamp(23px,3vw,33px);line-height:1.1}
+.application-page .application-section p,.application-page .application-section dd{font-size:14px;line-height:1.55;color:#4b4b4b}
+.application-page .application-section p+p{margin-top:10px}
+.application-page .application-section p>a{color:#264854;text-decoration:underline;text-underline-offset:3px}
+.application-page .application-section h2{font-size:16px;font-weight:650;line-height:1.4;margin-bottom:6px}
+.application-page .application-section .field-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.application-page .application-section .field-grid>label{min-width:0;grid-column:auto}
+.application-page .application-section .field-grid>.application-wide{grid-column:1/-1}
+.application-page .application-section input[type=file]{display:block;max-width:100%;min-width:0;padding:10px;font-size:14px}
+.application-page .application-section input[type=file]::file-selector-button{margin-right:8px;padding:7px;border:0;background:#eee;color:#111;cursor:pointer}
+.application-page .application-photos,.application-page #photo-guidance{margin-top:17px}
+.application-page .role-requirements,.application-page .ensemble-fields,.application-page .self-tape-technical{margin-top:24px;padding:16px 18px;background:#f2f2f2}
+.application-page .role-requirements{padding-block:5px}
+.application-page .role-requirements>summary{font-weight:650}
+.application-page .role-requirements details{border-bottom:1px solid #c4c4c4}
+.application-page .role-requirements details:first-of-type{margin-top:10px}
+.application-page .role-requirements details:last-child{border-bottom:0}
+.application-page .role-requirements summary{padding:10px 0;min-height:44px;font-size:15px;color:#222;cursor:pointer}
+.application-page .role-instructions{padding:0 0 16px 16px;font-size:14px;color:#333}
+.application-page .role-instructions ul{padding-left:18px;line-height:1.55}
+.application-page .application-options{margin-top:24px}
+.application-page .application-options legend{font-size:14px;font-weight:600;letter-spacing:0;margin-bottom:6px}
+.application-page .application-options label{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding-right:23px;cursor:pointer}
+.application-page .application-options input{width:auto;margin:0;accent-color:#222}
+.application-page .self-tape-guidance>div{display:grid;grid-template-columns:minmax(118px,1fr) minmax(0,2fr);gap:8px;border-bottom:1px solid #ccc;padding:12px 0}
+.application-page .self-tape-guidance dt{font-size:14px;font-weight:600}
+.application-page .self-tape-guidance dd{margin:0}
+.application-page .video-selection{overflow-wrap:anywhere}
+.application-page .application-section [hidden]{display:none}
+.application-receipt{margin:24px 0;max-width:600px;border-top:1px solid #aaa}
+.application-receipt>div{padding:12px 0;border-bottom:1px solid #aaa}
+.application-receipt dt{font-size:13px;font-weight:600}
+.application-receipt dd{margin:4px 0 0;overflow-wrap:anywhere}
+@media(max-width:900px){
+    .application-page .application-index{grid-template-columns:repeat(3,minmax(0,1fr));gap:0 20px}
+}
+@media(max-width:750px){
+    .application-page .application-intro{min-height:440px}
+    .application-page .application-content{padding-inline:clamp(16px,5vw,32px)}
+    .application-page .audition-form{padding-top:0}
+}
+@media(max-width:600px){
+    .application-page .application-index{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}
+    .application-page .application-section .field-grid{grid-template-columns:minmax(0,1fr)}
+    .application-page .self-tape-guidance>div{grid-template-columns:minmax(0,1fr);gap:4px}
+    .application-page .application-intro h1{margin-top:24px}
+    .application-page .application-section input:not([type=checkbox]):not([type=radio]),.application-page .application-section select,.application-page .application-section textarea{font-size:16px}
+}

@@ -1,11 +1,18 @@
 <?php
 namespace App\Http\Controllers;
 use App\Models\Selection;
+use App\Services\CastingCalendar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 class SingleSelectionController extends Controller {
-    public function index(){return view('casting.settings',['selection'=>Selection::with('phases')->latest('id')->firstOrFail()]);}
+    public function index(CastingCalendar $calendar)
+    {
+        return view('casting.settings', [
+            'selection'=>Selection::with('phases')->latest('id')->firstOrFail(),
+            'openingDate'=>$calendar->openingDate(),
+        ]);
+    }
     public function update(Request $request){
         $data=$request->validate(['title'=>['required','string','max:160'],'is_open'=>['required','boolean'],'starts_at'=>['nullable','date_format:Y-m-d\TH:i'],'ends_at'=>['nullable','date_format:Y-m-d\TH:i']]);
         if(!empty($data['starts_at']) && !empty($data['ends_at']) && $data['ends_at']<$data['starts_at'])throw \Illuminate\Validation\ValidationException::withMessages(['ends_at'=>'La data finale deve seguire quella iniziale.']);

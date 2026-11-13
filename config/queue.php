@@ -44,6 +44,15 @@ return [
             'after_commit' => false,
         ],
 
+        'self-tapes' => [
+            'driver' => 'database',
+            'connection' => null,
+            'table' => 'jobs',
+            'queue' => 'self-tapes',
+            'retry_after' => 1200,
+            'after_commit' => false,
+        ],
+
         'beanstalkd' => [
             'driver' => 'beanstalkd',
             'host' => env('BEANSTALKD_QUEUE_HOST', 'localhost'),

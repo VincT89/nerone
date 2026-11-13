@@ -16,23 +16,64 @@
 </section>
 <section class="nero-casting landing-panel" id="nuovo-classico" aria-labelledby="casting-title">
     <div class="nero-casting-layout">
-        <div class="nero-casting-copy"><h2 id="casting-title">Il palco.<br>La tua presenza.</h2><p>NERO prende forma anche attraverso i suoi interpreti. La ricerca del cast comincia da qui.</p><ul class="nero-disciplines" aria-label="Discipline artistiche"><li>Canto</li><li>Recitazione</li><li>Danza</li><li>Musica</li></ul></div>
+        <div class="nero-casting-copy">
+            <h2 id="casting-title">Audizioni</h2>
+            <p>{{ $project['description'] }} Le candidature si presentano esclusivamente online tramite il modulo.</p>
+            <x-casting-calendar :project="$project" :opens-at="$opensAt" :audition-month="$auditionMonth" />
+            <h3>Profili ricercati</h3>
+            <p>{{ $project['profiles'] }}</p>
+        </div>
         <div class="nero-casting-images"><figure class="nero-theatre-photo"><img src="{{ asset('assets/nero/teatro.jpg') }}" width="2000" height="1333" alt="Un grande palcoscenico e la platea, fotografia di repertorio" loading="lazy"></figure><figure class="nero-casting-detail"><img src="{{ asset('assets/nero/platea.jpg') }}" width="1600" height="2133" alt="Ordini di palchi di un grande teatro, fotografia di repertorio" loading="lazy"></figure></div>
     </div>
 </section>
 <section class="nero-curtain landing-panel" id="fuoco" aria-labelledby="curtain-title">
     <figure class="nero-curtain-photo"><img src="{{ asset('assets/nero/sipario.jpg') }}" width="1600" height="2400" alt="Sipario e architettura di una grande sala teatrale, fotografia di repertorio" loading="lazy"></figure>
-    <div class="nero-curtain-copy"><h2 id="curtain-title">Prima<br>del sipario.</h2><p>La voce, il corpo, l’interpretazione.<br>Il primo incontro con NERO è la tua audizione.</p></div>
+    <div class="nero-curtain-copy"><h2 id="curtain-title">Prima<br>del sipario.</h2><p>Solo i candidati selezionati saranno convocati a {{ $project['audition_city'] }} a {{ $auditionMonth }}. La produzione comunicherà loro direttamente le date e il luogo del provino.</p></div>
 </section>
 <section class="nero-staff landing-panel" id="staff" aria-labelledby="staff-title">
     <div class="nero-staff-layout">
-        <header><h2 id="staff-title">Il gruppo<br>creativo.</h2><p>Le persone dietro NERO.</p><p class="nero-staff-notice">I crediti sono in aggiornamento.</p><figure class="nero-staff-photo"><img src="{{ asset('assets/nero/palchi.jpg') }}" width="1600" height="2400" alt="Palchi e dettagli architettonici di un teatro, fotografia di repertorio" loading="lazy"></figure></header>
-        <dl class="nero-credits">@foreach(config('casting.project.staff',[]) as $person)<div><dt>{{ $person['role'] }}</dt><dd @class(['credit-pending'=>empty($person['name'])])>{{ $person['name'] ?: 'Da annunciare' }}</dd></div>@endforeach</dl>
+        <h2 id="staff-title">Autori e team creativo</h2>
+        <dl class="nero-production-credits">
+            @foreach($project['production'] as $credit)
+                <div><dt>{{ $credit['role'] }}</dt><dd>{{ $credit['name'] }}</dd></div>
+            @endforeach
+        </dl>
+        <div class="nero-staff-detail">
+            <figure class="nero-staff-photo">
+                <img src="{{ asset('assets/nero/palchi.jpg') }}" width="1600" height="2400" alt="Palchi e dettagli architettonici di un teatro, fotografia di repertorio" loading="lazy">
+            </figure>
+            <dl class="nero-credits">
+                @foreach($project['staff'] as $person)
+                    <div><dt>{{ $person['role'] }}</dt><dd>{{ $person['name'] }}</dd></div>
+                @endforeach
+            </dl>
+        </div>
+        <dl class="nero-authors">
+            @foreach($project['authors'] as $credit)
+                <div>
+                    <dt>{{ $credit['role'] }}</dt>
+                    <dd>
+                        <span class="nero-author-name">{{ $credit['name'] }}</span>
+                        @isset($credit['collaborators'])
+                            <p>{{ $credit['collaborators'] }}</p>
+                        @endisset
+                    </dd>
+                </div>
+            @endforeach
+        </dl>
     </div>
 </section>
 <section class="nero-invitation landing-panel" id="il-provino" aria-labelledby="audition-title">
     <figure class="nero-invitation-photo"><img src="{{ asset('assets/nero/audizione.jpg') }}" width="1376" height="768" alt="Una figura sul palco davanti alla platea di un grande teatro" loading="lazy"></figure>
-    <div class="nero-invitation-action"><h2 id="audition-title">La tua<br>audizione.</h2><a class="nero-action-main" href="{{ route('audition.apply') }}">Partecipa</a></div>
+    <div class="nero-invitation-action">
+        <h2 id="audition-title">La tua<br>audizione.</h2>
+        @if($isUpcoming)
+            <p class="nero-application-status">Apertura il <x-casting-opening-time :opens-at="$opensAt" /></p>
+        @elseif(!$isOpen)
+            <p class="nero-application-status">Candidature chiuse</p>
+        @endif
+        <a class="nero-action-main" href="{{ route('audition.apply') }}">{{ $isOpen ? 'Candidati online' : 'Candidati' }}</a>
+    </div>
 </section>
 
 <dialog class="trailer-dialog" data-trailer-dialog aria-labelledby="trailer-title"><div class="dialog-header"><h2 id="trailer-title" class="sr-only">Il video di NERO</h2><button type="button" data-close-trailer autofocus aria-label="Chiudi il video"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19"/></svg></button></div><video controls playsinline preload="none" data-full-trailer aria-label="Trailer completo di NERO, con data finale"><source src="{{ asset('assets/nero/trailer-nero.mp4') }}" type="video/mp4"></video></dialog>

@@ -1,57 +1,96 @@
-/** Le anteprime rimangono nel browser; i tre file partono insieme soltanto all'invio del modulo. */
+/** L’anteprima usa il file locale e lascia al server il controllo definitivo del formato e della durata. */
 (() => {
     const form = document.querySelector('[data-audition-form]');
     if (!form) return;
-    const initiallyDisabled = form.querySelector('button[type=submit]').disabled;
-    const inputs = [...form.querySelectorAll('[data-audition-video]')];
-    function validateVideos(changed) {
-        let total = 0;
-        inputs.forEach(input => {
-            input.setCustomValidity(''); const file = input.files[0]; if (!file) return;
-            total += file.size;
-            if (file.size > 100 * 1024 * 1024) input.setCustomValidity('I tre video insieme non possono superare 100 MB.');
-            else if (!/\.(mp4|mov|webm)$/i.test(file.name)) input.setCustomValidity('Scegli un video MP4, MOV o WebM.');
-        });
-        const target = changed?.files.length ? changed : inputs.find(input => input.files.length);
-        if (total > 100 * 1024 * 1024 && target) target.setCustomValidity('I tre video insieme non possono superare 100 MB.');
-        form.querySelector('[data-videos-total]').textContent = total ? 'Totale selezionato: ' + (total / 1024 / 1024).toLocaleString('it-IT', { maximumFractionDigits: 1 }) + ' MB su 100 MB.' : '';
+    const submit = form.querySelector('button[type=submit]');
+    const initiallyDisabled = submit.disabled;
+    const input = form.querySelector('[data-audition-video]');
+    const preview = form.querySelector('[data-video-local-preview]');
+    const feedback = form.querySelector('[data-video-selection]');
+    const role = form.querySelector('[data-audition-role]');
+    const ensemble = form.querySelector('[data-ensemble-fields]');
+    const guides = form.querySelectorAll('[data-role-guide]');
+    const catalog = form.querySelector('[data-role-catalog]');
+    let url;
+
+    function syncRole() {
+        ensemble.hidden = role.value !== 'ensemble';
+        ensemble.querySelectorAll('input,textarea').forEach(field => { field.disabled = ensemble.hidden; });
+        catalog.open = Boolean(role.value && role.value !== 'ensemble');
+        guides.forEach(guide => { guide.open = guide.dataset.roleGuide === role.value; });
     }
-    inputs.forEach(input => {
-        const field = input.closest('[data-video-field]');
-        const preview = field.querySelector('[data-video-local-preview]');
-        const label = field.querySelector('[data-video-selection]');
-        let url;
-        input.addEventListener('change', () => {
-            if (url) URL.revokeObjectURL(url);
-            preview.pause(); preview.removeAttribute('src'); preview.hidden = true; input.setCustomValidity(''); label.textContent = '';
-            const file = input.files[0];
-            validateVideos(input);
-            if (!file) return;
-            if (!input.checkValidity()) input.reportValidity();
-            if (file.size > 100 * 1024 * 1024 || !/\.(mp4|mov|webm)$/i.test(file.name)) return;
-            label.textContent = file.name + ' · ' + (file.size / 1024 / 1024).toLocaleString('it-IT', { maximumFractionDigits: 1 }) + ' MB';
-            url = URL.createObjectURL(file); preview.src = url; preview.hidden = false;
+    syncRole();
+    role.addEventListener('change', syncRole);
+
+    input.addEventListener('change', () => {
+        if (url) URL.revokeObjectURL(url);
+        url = undefined;
+        preview.pause();
+        preview.removeAttribute('src');
+        preview.load();
+        preview.hidden = true;
+        input.setCustomValidity('');
+        feedback.textContent = '';
+        const file = input.files[0];
+        if (!file) return;
+        if (file.size > 100_000_000) {
+            input.setCustomValidity('Il self-tape deve pesare al massimo 100 MB.');
+        } else if (!/\.(mp4|mov|webm)$/i.test(file.name)) {
+            input.setCustomValidity('Scegli un video MP4, MOV o WebM.');
+        }
+        if (!input.reportValidity()) return;
+        const size = (file.size / 1_000_000).toLocaleString('it-IT', { maximumFractionDigits: 1 });
+        feedback.textContent = file.name + ' · ' + size + ' MB';
+        url = URL.createObjectURL(file);
+        preview.src = url;
+    });
+    preview.addEventListener('loadedmetadata', () => {
+        if (!url || preview.currentSrc !== url) return;
+        preview.hidden = false;
+        if (preview.duration > 300) {
+            input.setCustomValidity('Il self-tape deve durare al massimo 5 minuti.');
+            input.reportValidity();
+        }
+    });
+    preview.addEventListener('error', () => {
+        if (url && preview.currentSrc === url) feedback.textContent += ' · Anteprima non disponibile in questo browser.';
+    });
+    form.querySelectorAll('[data-max-file-bytes]').forEach(field => {
+        field.addEventListener('change', () => {
+            const limit = Number(field.dataset.maxFileBytes);
+            field.setCustomValidity(field.files[0]?.size > limit ? 'Il file deve pesare al massimo ' + (limit / 1048576) + ' MB.' : '');
+            field.reportValidity();
         });
     });
     form.addEventListener('submit', () => {
-        form.querySelector('button[type=submit]').disabled = true;
-        form.querySelector('[data-audition-status]').textContent = 'Invio dei video in corso. Attendi la conferma senza chiudere la pagina.';
+        submit.disabled = true;
+        form.querySelector('[data-audition-status]').textContent = 'Invio degli allegati in corso. Attendi la conferma senza chiudere la pagina.';
     });
-    addEventListener('pageshow', () => { form.querySelector('button[type=submit]').disabled = initiallyDisabled; });
+    addEventListener('pageshow', () => { submit.disabled = initiallyDisabled; });
 })();
 /** Il nuovo codice viene richiesto con protezione CSRF e non modifica i dati o gli allegati già scelti. */
 (() => {
     const captcha = document.querySelector('[data-local-captcha]');
     if (!captcha) return;
     const button = captcha.querySelector('[data-captcha-renew]'), status = captcha.querySelector('[data-captcha-status]');
+    const id = captcha.querySelector('[data-captcha-id]');
     button.addEventListener('click', async () => {
         button.disabled = true;
         try {
-            const response = await fetch(captcha.dataset.renew, { method: 'POST', credentials: 'same-origin', headers: { Accept: 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content } });
+            const response = await fetch(captcha.dataset.renew, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                },
+                body: JSON.stringify({ captcha_id: id.value }),
+            });
             if (!response.ok) throw new Error('captcha');
             const data = await response.json();
-            captcha.querySelector('[data-captcha-id]').value = data.id; captcha.querySelector('[data-captcha-image]').src = data.image;
-            const audio = captcha.querySelector('[data-captcha-audio]'); audio.pause(); audio.src = data.audio;
+            id.value = data.id;
+            captcha.querySelector('[data-captcha-image]').src = data.image;
             captcha.querySelector('[data-captcha-code]').value = ''; status.textContent = 'Codice aggiornato.';
         } catch { status.textContent = 'Impossibile aggiornare il codice. Attendi qualche istante e riprova.'; }
         finally { button.disabled = false; }
@@ -63,7 +102,7 @@
     if (!choices) return;
     const cards = [...document.querySelectorAll('[data-review-video]')];
     function select(id) {
-        cards.forEach(card => { const active = card.dataset.reviewVideo === id; card.hidden = !active; if (!active) card.querySelector('video').pause(); });
+        cards.forEach(card => { const active = card.dataset.reviewVideo === id; card.hidden = !active; if (!active) card.querySelector('video')?.pause(); });
         choices.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.videoChoice === id)));
     }
     choices.hidden = false;

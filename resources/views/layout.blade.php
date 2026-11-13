@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="robots" content="noindex, nofollow">
-    <meta name="description" content="NERO. Il portale delle audizioni. Presenta la tua candidatura per il cast.">
+    <meta name="description" content="NERO! Nuovo musical in preparazione a Roma. Informazioni su audizioni, profili ricercati e candidature online.">
     <title>@yield('title', 'Il progetto') · NERO</title>
     <link rel="icon" href="data:,">
     <link rel="preload" href="{{ asset('assets/nero/progetto-neue.woff2') }}?v=4" as="font" type="font/woff2" crossorigin>
@@ -30,7 +30,10 @@
             @hasSection('casting-nav')
                 <a class="nav-context" href="{{ route('casting.index') }}">Produzione</a><div class="nav-links"><form method="post" action="{{ route('casting.logout') }}">@csrf<button class="text-button" type="submit">Esci</button></form></div>
             @else
-                <div class="nav-links"><a class="nav-apply" href="{{ route('audition.apply') }}">Partecipa</a></div>
+                @yield('public-nav-start')
+                @unless(request()->routeIs('audition.apply'))
+                    <div class="nav-links"><a class="nav-apply" href="{{ route('audition.apply') }}">Candidati</a></div>
+                @endunless
             @endif
         </nav>
     </header>

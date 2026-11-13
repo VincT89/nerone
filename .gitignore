@@ -1,8 +1,14 @@
 *.log
 .DS_Store
+
+# Configurazioni con valori locali e credenziali
 .env
-.env.backup
-.env.production
+.env.*
+.env~
+!/.env.example
+/auth.json
+
+# Configurazione degli editor e avvio locale
 .phpactor.json
 .phpunit.result.cache
 /.codex
@@ -12,7 +18,10 @@
 /.phpunit.cache
 /.vscode
 /.zed
-/auth.json
+/avvia.ps1
+/avvia.sh
+
+# Dipendenze installate e file generati
 /node_modules
 /public/build
 /public/fonts-manifest.dev.json

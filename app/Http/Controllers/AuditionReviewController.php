@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 use App\Models\{Audition,AuditionComment,AuditionVideo,AuditionVote};
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 class AuditionReviewController extends Controller {
     public const VOTES=['red'=>'Non idoneo','amber'=>'Da rivedere','green'=>'Idoneo'];
@@ -20,5 +21,12 @@ class AuditionReviewController extends Controller {
         AuditionVote::upsert([['audition_id'=>$audition->id,'user_id'=>$request->user()->id,'color'=>$data['color'],'created_at'=>now(),'updated_at'=>now()]],['audition_id','user_id'],['color','updated_at']);
         return redirect(route('casting.show',$audition).'#valutazioni')->with('saved','Il tuo voto è stato salvato.');
     }
-    public function video(AuditionVideo $video){return app(AuditionController::class)->video(new Audition(['video_path'=>$video->file_path,'video_mime'=>$video->file_mime]));}
+    public function video(AuditionVideo $video)
+    {
+        $audition = $video->audition;
+        abort_if($audition === null, 404);
+        Gate::authorize('review-audition', $audition);
+
+        return app(AuditionController::class)->video(new Audition(['video_path'=>$video->file_path, 'video_mime'=>$video->file_mime]));
+    }
 }

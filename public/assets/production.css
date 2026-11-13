@@ -140,13 +140,10 @@
 .video-selection,.upload-reselect{font-size:12px;color:#666;margin-top:12px;line-height:1.5;overflow-wrap:anywhere}
 .local-captcha{margin-top:32px;padding-top:24px;border-top:1px solid #ccc}
 .captcha-picture{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:20px}
-.captcha-picture img{width:246px;height:78px;max-width:100%;object-fit:contain}
+.captcha-picture img{width:246px;height:auto;max-width:100%;object-fit:contain}
 .captcha-picture button{border:1px solid #111;background:#111;color:#fff;font-size:12px;text-decoration:none;min-height:44px;padding:10px 16px}
 .local-captcha label{max-width:290px}
 .local-captcha input[type=text]{font-size:20px;letter-spacing:.2em;margin-top:10px;background:white}
-.local-captcha details{margin-top:18px;font-size:12px}
-.local-captcha summary{min-height:44px;padding:10px 0;cursor:pointer}
-.local-captcha audio{display:block;width:100%;max-width:300px;margin-top:10px}
 .local-captcha p{font-size:12px;color:#666;line-height:1.5}
 @media(max-width:1200px){.production-filters{grid-template-columns:repeat(3,minmax(0,1fr))}.production-filters .button{justify-self:start;min-width:100px}.production-filters>a{margin-top:0}.review-heading{flex-wrap:wrap}.review-status{margin-left:0;flex-basis:100%}.review-status label{width:250px}.review-layout{grid-template-columns:minmax(0,1fr) 300px;gap:22px}.review-votes{padding:20px}.production-identity{display:none}}
 @media(max-width:900px){.review-layout{grid-template-columns:minmax(0,1fr)}.review-votes{position:static;grid-row:1}.operator-votes{margin:20px 0}.review-votes form{display:flex;align-items:end;justify-content:space-between;gap:24px}.review-votes fieldset{display:flex;flex-wrap:wrap;gap:12px 24px}.review-votes legend{margin-bottom:10px}.review-votes form>.button{width:auto;flex-shrink:0}.review-votes p.vote-information{max-width:550px}.review-delete{width:auto}.production-team{gap:25px}}
@@ -204,6 +201,7 @@
 .dossier-videos h2{margin-bottom:20px}
 .dossier-videos .video-choices{margin-bottom:20px}
 .dossier-videos .review-video-card h3{font:12px/1.5 var(--sans);color:#666}
+.dossier-videos .video-compression-status{margin:0 0 10px;color:#454545;font:13px/1.5 var(--sans)}
 .dossier-videos .review-video-card video,.dossier-videos .legacy-audition-video{width:100%;max-height:62svh;object-fit:contain;aspect-ratio:16/9}
 .dossier-videos .production-empty{font:13px/1.6 var(--sans);border:1px dashed #c4ccd0;background:#fafbfb;color:#737e85;padding:22px}
 .dossier-review-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(285px,350px);gap:34px;align-items:start;padding:30px 0}
@@ -423,3 +421,8 @@
  .today-applications strong{font-size:20px}
  .production-role-details .production-roles{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 20px}
 }
+.casting-profile .dossier-attachments{display:flex;flex-wrap:wrap;gap:8px 20px;padding-block:10px}
+.casting-profile .dossier-attachments a,.casting-profile .dossier-details a{color:#244754;text-decoration:underline;text-underline-offset:3px}
+.casting-profile .dossier-details{display:grid;gap:12px;margin:0;padding:0 16px 14px}
+.casting-profile .dossier-details dt{font-size:12px;font-weight:650;color:#3e3e3e}
+.casting-profile .dossier-details dd{margin:3px 0 0;color:#222;white-space:pre-wrap;overflow-wrap:anywhere}
