@@ -1,72 +1,66 @@
-# NERONE
+# NERO
 
-Applicazione Laravel per la presentazione del progetto NERONE, l'invio di candidature video e la gestione riservata dei provini.
+Sito Laravel del musical NERO con presentazione del progetto, candidature online e area riservata alla produzione. Le immagini, i caratteri e il trailer sono serviti da `public/assets`.
 
-La pagina pubblica utilizza il trailer fornito e le immagini del progetto visivo Laccioland Studio. Il PDF originale resta fuori dalla cartella pubblica. Le risorse effettivamente utilizzate sono in `public/assets/nerone`.
+## Avvio locale
 
-## Avvio
-
-Usare un runtime PHP che includa le correzioni ufficiali di sicurezza, con le estensioni richieste da Laravel e PDO MySQL. La verifica locale è stata eseguita con PHP 8.5.12, pacchetto Windows 8.5.12-1.
-
-La connessione al database, la chiave dell'applicazione e le impostazioni dell'ambiente sono in `.env`, che deve restare privato. Il server deve esporre esclusivamente `public`.
-
-Da un terminale aperto in questa cartella, verificare che PHP carichi il driver MySQL:
+Le dipendenze bloccate da Composer richiedono PHP 8.4.1 o successivo. Usare una build con le correzioni di sicurezza e il driver PDO MySQL. Il collaudo locale usa PHP 8.4.27. Su Windows, se sono installate più versioni di PHP, impostare `PATH` e `PHPRC` nelle impostazioni del terminale della sola area di lavoro in VS Code. Aprire un nuovo terminale e verificare la versione, il `php.ini` caricato e il driver MySQL.
 
 ```sh
+php -v
+php --ini
 php --ri pdo_mysql
+composer install
 ```
 
-Avviare Laravel con il comando standard di Artisan e aprire l’indirizzo mostrato nel terminale:
+Per una nuova installazione, creare `.env` a partire da `.env.example` e configurare il database. Generare la chiave soltanto se manca e applicare le migrazioni.
 
 ```sh
+php artisan key:generate
+php artisan migrate
 php artisan serve
 ```
 
-Il video di ingresso usa il filmato originale completo, con data finale e audio richiesto alla partenza. Se il browser blocca l audio automatico, un tocco sul video lo attiva. Non ci sono pulsanti sovrapposti: il video si puo mettere in pausa toccandolo o con Spazio, M gestisce l audio ed Esc apre la pagina. Il collegamento per saltare il film diventa visibile con la navigazione da tastiera. La preferenza di movimento ridotto evita l ingresso automatico. La memoria della scheda evita di ripetere il film a ogni ritorno. Logo, immagini e subset del carattere derivano dal PDF fornito.
+La home e il gestionale caricano direttamente i file in `public/assets` e si aprono con `php artisan serve`. Conservare `.env` fuori da Git.
 
-## Casting
+## Candidature
 
-La scheda NERO accetta un self-tape di massimo 5 minuti e 100 MB, il curriculum PDF e due foto. Gli allegati vengono conservati su storage privato e sono disponibili nella scheda di produzione. Applicare la migrazione `2026_11_12_100000_add_application_details_to_auditions.php` per salvare i nuovi campi.
+Il modulo è consultabile prima dell'apertura annunciata del 17 novembre 2026. Da **Apertura audizioni** gli amministratori possono regolare la selezione, l'apertura e la chiusura. I campi orari del gestionale usano l'ora italiana.
 
-Per l'invio, il PHP che esegue il sito deve consentire `upload_max_filesize=100M` e `post_max_size=160M` oppure limiti superiori. Il controllo della durata richiede FFmpeg disponibile nel PATH del processo PHP oppure indicato in `CASTING_FFMPEG_BINARY`.
+La candidatura richiede un self-tape fino a 5 minuti e 100 MB, il curriculum in PDF e due foto recenti. L'invio è protetto da un CAPTCHA locale e limitato a una candidatura completata per connessione ogni ora. Foto, video e documenti vengono conservati nello spazio privato dell'applicazione. Gli operatori autorizzati consultano, filtrano, commentano e votano le candidature. Gli amministratori possono eliminarle con conferma esplicita. Se un allegato non viene rimosso, la cancellazione resta in sospeso e si può riprendere dal gestionale.
 
-Dopo aver applicato le migrazioni, impostare in Plesk una singola attività che esegua `artisan schedule:run` ogni minuto. Selezionare la versione PHP del sito, inviare un provino di prova e usare «Esegui ora» per verificare che FFmpeg produca l'MP4. La coda `self-tapes` usa il database dell'applicazione.
+## Accesso della produzione
+
+**Area riservata** nel footer apre il login della produzione. In locale `CASTING_LOCAL_ACCESS_ONLY=true` limita l'accesso alle richieste provenienti dal computer locale. Sul server, `CASTING_LOCAL_ACCESS_ONLY=false` consente alla produzione di accedere da remoto con le proprie credenziali.
+
+Per il primo accesso, impostare una password temporanea in `CASTING_ADMIN_PASSWORD` nel file `.env` privato. Se la configurazione è in cache, eseguire prima `php artisan config:clear`. Dopo le migrazioni avviare il seeder.
+
+```sh
+php artisan db:seed --class=CastingAdminSeeder
+```
+
+Il seeder crea `admin@admin.it` se il gestionale è privo di amministratori e salva la password come hash. Rimuovere la variabile dopo la creazione e rigenerare l'eventuale cache di configurazione. In **Collaboratori**, creare un amministratore personale, accedere con quello e rimuovere l'account iniziale.
+
+Gli amministratori possono creare account, modificare nome ed email e assegnare il ruolo di amministratore o collaboratore. Il gestionale tutela l'ultimo amministratore e richiede che la cancellazione sia eseguita da un altro amministratore. Eliminare un account elimina anche i suoi voti e commenti.
+
+## Pubblicazione su Plesk
+
+Configurare il sottodominio affinché esponga solo `public`. Impostare `APP_ENV=production`, `APP_DEBUG=false` e `APP_URL` con l'indirizzo HTTPS effettivo. Rendere scrivibili da PHP `storage` e `bootstrap/cache` e mantenere gli allegati fuori dalla cartella pubblica.
+
+Verificare la versione PHP effettiva del sottodominio e quella usata dalle attività pianificate. Le release ufficiali 8.4.27 e 8.5.12 includono le correzioni per CVE-2026-109618 e CVE-2026-109619. Per una build con correzioni applicate dal fornitore, verificare il relativo avviso. [Changelog PHP](https://www.php.net/ChangeLog-8.php#8.4.27)
+
+Per l'invio dei provini, impostare almeno `upload_max_filesize=100M` e `post_max_size=160M` e controllare anche il limite del server web. FFmpeg deve essere disponibile al processo PHP, tramite PATH o `CASTING_FFMPEG_BINARY`.
+
+Dopo le migrazioni, configurare una sola attività Plesk ogni minuto per eseguire il comando seguente dalla cartella dell'applicazione con il PHP previsto per il sito.
 
 ```sh
 php artisan schedule:run
 ```
 
-Il candidato riceve subito la conferma dell'invio. Il worker prepara l'MP4 con un obiettivo indicativo del 40% in meno, conserva l'audio AAC quando possibile e mantiene disponibile il file ricevuto se la conversione non riesce. Gli MP4 già leggeri vengono conservati se la ricodifica non riduce il peso.
+Il worker della coda `self-tapes` usa il database e si arresta a coda vuota oppure dopo cinque minuti al termine del lavoro in corso. Il blocco dello scheduler scade dopo 30 minuti. La compressione cerca di ridurre il peso del video conservando l'audio quando presente e mantiene il file ricevuto se la conversione fallisce o non riduce il peso. La coda riprova dopo 15, 45 e 120 secondi. Una prenotazione interrotta può essere ripresa dopo 20 minuti. Provare un invio e il relativo job sul sottodominio prima di aprire le candidature.
 
-Lo scheduler avvia un solo worker `self-tapes` alla volta. Il worker si ferma a coda vuota oppure, dopo cinque minuti, al termine del lavoro in corso. Il blocco dello scheduler usa la cache di Laravel e scade dopo 30 minuti. Usare un solo meccanismo di avvio per questa coda.
+## Privacy e cookie
 
-La coda consente fino a quattro tentativi, con attese di 15, 45 e 120 secondi. Se l'esecuzione termina con un errore prima che Laravel riesca a rimuovere o rilasciare la prenotazione, il worker la rende nuovamente disponibile appena il database risponde. Se il processo si arresta di colpo, la prenotazione scade dopo 20 minuti e il primo worker disponibile riprende il lavoro.
+Il titolare indicato è Nero Musical srl. Completare in `config/casting.php` il recapito ufficiale e aggiornare nell'informativa privacy le informazioni sull'hosting effettivo prima dell'apertura. I link **Privacy** e **Cookie** sono nel footer. La cookie policy descrive i cookie tecnici e la memoria della scheda usata per il trailer. [Linee guida del Garante sui cookie](https://www.garanteprivacy.it/home/docweb/-/docweb-display/docweb/9677876)
 
-Il login richiede un account esistente con il permesso di operatore casting. Non sono presenti registrazione o configurazione pubbliche. L'impostazione `CASTING_LOCAL_ACCESS_ONLY` mantiene l'area riservata limitata al computer locale.
-
-I video delle candidature vengono salvati fuori dalla cartella pubblica. Il loro streaming richiede una sessione autorizzata. La produzione può cercare i candidati, salvare note e valutazioni ed eliminare scheda e video con conferma esplicita.
-
-## Contenuti da completare
-
-Il titolare del trattamento e il recapito ufficiale sono da confermare. I relativi campi sono in `config/casting.php`. L'informativa è indicata come in aggiornamento e deve essere completata prima dell'apertura al pubblico. Profili ricercati, requisiti specifici e calendario non vengono inventati.
-
-Prima di una pubblicazione occorre verificare l'hosting effettivo, usare HTTPS, credenziali robuste e un utente database con permessi limitati. La documentazione e i materiali creativi forniti mantengono i diritti dei rispettivi autori; le licenze delle dipendenze software non si estendono a tali materiali.
-
-
-## Area personale e posta locale
-
-Il modulo iniziale raccoglie dati, profilo artistico e una foto facoltativa. I video e i documenti vengono richiesti successivamente dalla produzione. Il gestionale mostra una scheda per candidatura e conteggi reali per profilo.
-
-La pagina Posta locale permette agli operatori di provare le comunicazioni e il collegamento di attivazione senza inviare email esterne. E' disponibile solo sul computer locale con CASTING_LOCAL_ACCESS_ONLY attivo e APP_URL locale. I messaggi sono cifrati nel database. I collegamenti di attivazione scadono dopo 48 ore, sono monouso e consentono al candidato di scegliere una password; le password non vengono inviate per email. La posta reale dovra essere configurata prima della pubblicazione.
-
-Le sessioni dei candidati e degli operatori sono distinte. Tutte le foto e tutti gli allegati restano privati. La cancellazione di una scheda elimina anche allegati, richieste, comunicazioni e il relativo account.
-
-
-Il collegamento Login apre un unico modulo: le credenziali degli operatori portano al gestionale, quelle dei candidati alla propria area. Non viene richiesta una scelta del ruolo.
-
-
-## Fasi di selezione
-
-Ogni casting puo avere un numero libero di fasi successive con nome, inizio e fine in orario italiano. Le date sono conservate in UTC. La prima fase regola l apertura delle nuove candidature. La produzione ammette esplicitamente il candidato alla fase seguente e il passaggio viene registrato. Ogni richiesta appartiene a una fase e il candidato puo rispondere nel relativo periodo. I dati restano separati per candidatura e selezione.
-
-La tabella contiene foto, profilo, fase, stato e data di ricezione, con filtri e paginazione. I limiti delle richieste di accesso sono separati da quelli degli altri moduli. Il sito pubblico usa pannelli proporzionati alla schermata con aggancio allo scorrimento; testi ingranditi e contenuti espansi mantengono lo scorrimento naturale.
+Il layout include `noindex, nofollow`. Prima di pubblicare, confermare se il sito deve essere indicizzato.

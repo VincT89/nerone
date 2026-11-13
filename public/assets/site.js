@@ -189,11 +189,12 @@
     const link = document.querySelector('[data-back-top]');
     if (!link) return;
     const visible = new Set();
+    const protectedContent = [...document.querySelectorAll('.nero-production-credits,.nero-credits,.nero-authors,.nero-curtain-copy > p,.application-page .audition-form')];
     function update() {
         link.hidden = scrollY < 500 || visible.size > 0;
         if (link.hidden) return;
         const box = link.getBoundingClientRect();
-        const coversContent = [...document.querySelectorAll('.nero-production-credits,.nero-credits,.nero-authors,.nero-curtain-copy>p')].some(element => {
+        const coversContent = protectedContent.some(element => {
             const r = element.getBoundingClientRect();
             return box.left < r.right && box.right > r.left && box.top < r.bottom && box.bottom > r.top;
         });

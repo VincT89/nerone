@@ -120,6 +120,11 @@
 .production-team form{padding:27px;background:white;border:1px solid #d5d5d5}
 .production-team form>label+label{margin-top:17px}
 .production-team form>.button{margin-top:22px}
+.production-team form select,.team-edit select{background:#fff;border-color:#bbb;color:#111;margin-top:7px}
+.production-team .team-member-actions{display:flex;align-items:center;flex-wrap:wrap;gap:6px 16px;margin-top:8px}
+.team-member-actions .button{min-height:44px;padding:8px 14px}
+.team-member-actions .button:disabled{cursor:default}
+.team-edit>label+label{margin-top:17px}
 .casting-login-page{background:#fff;color:#111;--focus:#111}
 .casting-login-page .site-header,.casting-login-page .site-footer{background:#000;color:#fff}
 .casting-login-page .casting-access{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100svh - 100px)}
@@ -132,6 +137,7 @@
 .casting-login-page .login-form .button{background:#111;border-color:#111;color:#fff}
 .casting-page .quiet-page>p,.casting-page .quiet-page .back-link{color:#555}
 .casting-page .delete-form input{background:#fff;color:#111;border-color:#999}
+.casting-page .delete-form .button.danger{color:#8b3026;border-color:#a45c51}
 .audition-videos{margin-top:38px}
 .audition-videos>p{font-size:13px;color:#666;line-height:1.6}
 .audition-video-field{padding:22px 0;border-bottom:1px solid #d4d4d4}
@@ -157,7 +163,7 @@
  .review-heading{gap:16px;margin-bottom:24px}.review-heading>img{width:68px;height:84px}.review-heading>div{flex:1}.review-heading h1{font-size:27px}.review-heading p{font-size:12px}.review-heading p.review-received{font-size:10px}.review-status{width:100%;gap:10px}.review-status label{width:auto;flex:1;min-width:0}.review-status select{font-size:16px}.review-status>.button{padding-inline:13px}
  .review-votes,.review-videos,.review-personal,.review-chat{padding:20px}.review-layout{gap:24px}.review-layout h2{font-size:22px}.review-votes form{display:block}.review-votes fieldset{display:block}.review-votes form>.button{width:100%}.vote-option{min-height:44px}.operator-votes li{font-size:12px}
  .review-personal dl{grid-template-columns:minmax(0,1fr);gap:20px}.review-chat textarea{font-size:16px}.review-chat form>div{display:block}.review-chat form>div>.button{margin-top:15px;width:100%}.chat-message{max-width:95%;min-width:150px;padding:12px}.chat-message header{gap:5px}.chat-message time{font-size:9px}.chat-message p{font-size:13px}
- .production-settings{padding:22px}.settings-dates{grid-template-columns:minmax(0,1fr);gap:18px}.production-settings input,.production-team form input{font-size:16px}.production-team{grid-template-columns:minmax(0,1fr);gap:30px}.production-team form{padding:22px}
+ .production-settings{padding:22px}.settings-dates{grid-template-columns:minmax(0,1fr);gap:18px}.production-settings input,.production-team form input,.production-team form select,.team-edit select{font-size:16px}.production-team{grid-template-columns:minmax(0,1fr);gap:30px}.production-team form{padding:22px}
  .casting-login-page .casting-access{display:flex;flex-direction:column;min-height:0}.casting-login-page .access-form{padding:40px 6%;order:0;width:100%}.casting-login-page .access-stage{order:1;height:260px}.casting-login-page .access-stage img{position:static}.casting-login-page .access-form h1{font-size:45px}.casting-login-page .login-form input{font-size:16px}
  .audition-video-field input{font-size:16px}
 }

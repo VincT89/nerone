@@ -30,9 +30,13 @@ Route::middleware(CastingAccess::class)->prefix('casting')->name('casting.')->gr
         Route::patch('/impostazioni',[SingleSelectionController::class,'update'])->name('settings.update');
         Route::get('/provini/{audition}/elimina',[AuditionController::class,'confirmDelete'])->name('confirm-delete');
         Route::delete('/provini/{audition}',[AuditionController::class,'destroy'])->name('destroy');
+        Route::get('/collaboratori',[ProductionTeamController::class,'index'])->name('team');
+        Route::post('/collaboratori',[ProductionTeamController::class,'store'])->middleware('throttle:6,1,team')->name('team.store');
+        Route::get('/collaboratori/{operator}/modifica',[ProductionTeamController::class,'edit'])->name('team.edit');
+        Route::patch('/collaboratori/{operator}',[ProductionTeamController::class,'update'])->name('team.update');
+        Route::get('/collaboratori/{operator}/elimina',[ProductionTeamController::class,'confirmDelete'])->name('team.confirm-delete');
+        Route::delete('/collaboratori/{operator}',[ProductionTeamController::class,'destroy'])->name('team.destroy');
     });
-    Route::get('/collaboratori',[ProductionTeamController::class,'index'])->name('team');
-    Route::post('/collaboratori',[ProductionTeamController::class,'store'])->middleware('throttle:6,1,team')->name('team.store');
     Route::post('/esci',[CastingAuthController::class,'logout'])->name('logout');
 });
 Route::get('/candidature/{audition}/foto',[MaterialController::class,'photo'])->name('material.photo');

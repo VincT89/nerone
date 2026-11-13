@@ -52,8 +52,12 @@ a.back-to-top.back-to-top-control:focus-visible{outline:2px solid #71a2b9;outlin
 .site-footer.footer-layout .footer-top.footer-top-control:hover{background:rgb(194 214 221 / .26);border-color:#c2d6dd;color:#fff}
 .site-footer.footer-layout .footer-top.footer-top-control:focus-visible{outline:2px solid #8bb4c9;outline-offset:4px}
 .application-page .application-layout{display:block;max-width:none;padding:0 0 clamp(44px,7vw,100px)}
-.application-page .site-header>nav{width:100%;margin:0;justify-content:space-between}
-.application-page .site-header .nav-back-project{color:#fff;text-decoration:underline;text-underline-offset:4px}
+.site-header>nav:has(>.nav-back-project){width:100%;margin:0;justify-content:space-between}
+.site-header .nav-back-project{display:inline-flex;align-items:center;min-height:44px;color:#fff;text-decoration:underline;text-underline-offset:4px}
+.legal-cookies{margin:0;border-top:1px solid #c9c9c9}
+.legal-cookies>div{padding:13px 0;border-bottom:1px solid #c9c9c9}
+.legal-cookies dt{font-weight:650;overflow-wrap:anywhere}
+.legal-cookies dd{margin:4px 0 0}
 .application-page .application-intro{position:relative;top:auto;isolation:isolate;display:flex;align-items:flex-end;min-height:clamp(300px,34vw,550px);background:#111;color:#fff}
 .application-page .application-intro-copy{position:relative;width:100%;padding:clamp(20px,3.2vw,44px) clamp(20px,5vw,80px);text-shadow:0 1px 3px #000,0 2px 12px #000}
 .application-page .application-intro h1{font-size:clamp(36px,5.1vw,84px);font-weight:400;letter-spacing:-.06em;line-height:1.02;margin:20px 0 14px}

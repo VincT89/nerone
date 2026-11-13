@@ -8,8 +8,8 @@ return [
         'text'=>'Confermo che le informazioni fornite sono corrette e di essere autorizzato/a a presentare tutti i materiali inclusi nella candidatura.',
     ],
     'local_access_only'=>(bool)env('CASTING_LOCAL_ACCESS_ONLY',true),
-    /** L'identità legale viene completata soltanto con i dati confermati dal titolare. */
-    'privacy'=>['controller'=>null,'contact'=>null],
+    'admin_password'=>env('CASTING_ADMIN_PASSWORD'),
+    'privacy'=>['controller'=>'Nero Musical srl','contact'=>null],
     'project'=>[
         'title'=>'NERO',
         'description'=>'NERO! è un nuovo musical in preparazione a Roma.',
