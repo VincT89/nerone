@@ -2,7 +2,7 @@
 @section('title','Il progetto')
 @section('body-class','nero-home cinema-home')
 @section('entry-film')
-<section class="entry-film" data-entry-film aria-label="Ingresso video al progetto" tabindex="-1"><h2 class="sr-only" id="entry-title">Il trailer di NERO</h2><p class="sr-only" id="entry-help">Tocca il video per attivare l’audio o mettere in pausa. Da tastiera: Spazio per la riproduzione, M per l’audio, Esc per entrare nel sito.</p><video id="entry-video" data-entry-video controls playsinline preload="auto" poster="{{ asset('assets/nero/ingresso.jpg') }}" aria-label="Trailer completo di NERO, con data finale" aria-describedby="entry-help"><source src="{{ asset('assets/nero/trailer-nero.mp4') }}" type="video/mp4"></video><a class="film-skip" href="#progetto" data-enter-landing>Salta</a><div class="entry-progress"><progress max="100" value="0" data-entry-buffer aria-label="Caricamento del video"></progress><progress max="100" value="0" data-entry-progress aria-label="Avanzamento del video"></progress></div></section>
+<section class="entry-film" data-entry-film aria-label="Ingresso video al progetto" tabindex="-1"><h2 class="sr-only" id="entry-title">Il trailer di {{ $project['title'] }}</h2><p class="sr-only" id="entry-help">Tocca il video per attivare l’audio o mettere in pausa. Da tastiera: Spazio per la riproduzione, M per l’audio, Esc per entrare nel sito.</p><video id="entry-video" data-entry-video controls playsinline preload="auto" poster="{{ asset('assets/nero/ingresso.jpg') }}" aria-label="Trailer completo di {{ $project['title'] }}" aria-describedby="entry-help"><source src="{{ asset('assets/nero/trailer-nero.mp4') }}" type="video/mp4"></video><a class="film-skip" href="#progetto" data-enter-landing>Salta</a><div class="entry-progress"><progress max="100" value="0" data-entry-buffer aria-label="Caricamento del video"></progress><progress max="100" value="0" data-entry-progress aria-label="Avanzamento del video"></progress></div></section>
 @endsection
 @section('content')
 <section class="roma-cover landing-panel" id="progetto" aria-labelledby="project-title">
@@ -11,14 +11,15 @@
         <!-- L'inquadratura verticale esclude i margini neri e conserva l'intero arco con la figura. -->
         <svg class="hero-tall" viewBox="620 0 860 1143" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><image href="{{ asset('assets/nero/hero.jpg') }}" width="2048" height="1143"/></svg>
     </figure>
-    <div class="cover-words"><p>Un nuovo<br>classico.</p><div class="cover-title"><h1 id="project-title" tabindex="-1">NERO</h1><p>Audizioni per il cast.</p></div></div>
+    <div class="cover-words"><p>Musical<br>Experience</p><div class="cover-title"><h1 id="project-title" tabindex="-1">{{ $project['title'] }}</h1><p>Audizioni per il cast.</p></div></div>
     <div class="cover-bottom"><button type="button" data-open-trailer>Guarda il video</button></div>
 </section>
 <section class="nero-casting landing-panel" id="nuovo-classico" aria-labelledby="casting-title">
     <div class="nero-casting-layout">
         <div class="nero-casting-copy">
             <h2 id="casting-title">Audizioni</h2>
-            <p>{{ $project['description'] }} Le candidature si presentano esclusivamente online tramite il modulo.</p>
+            <p>{{ $project['description'] }}</p>
+            <p>Le candidature per le audizioni si presentano esclusivamente online, compilando il <a href="{{ route('audition.apply') }}">modulo dedicato</a>.</p>
             <x-casting-calendar :project="$project" :opens-at="$opensAt" :deadline="$deadline" :is-open="$isOpen" :is-upcoming="$isUpcoming" :audition-month="$auditionMonth" />
             <h3>Profili ricercati</h3>
             <p>{{ $project['profiles'] }}</p>
@@ -76,5 +77,5 @@
     </div>
 </section>
 
-<dialog class="trailer-dialog" data-trailer-dialog aria-labelledby="trailer-title"><div class="dialog-header"><h2 id="trailer-title" class="sr-only">Il video di NERO</h2><button type="button" data-close-trailer autofocus aria-label="Chiudi il video"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19"/></svg></button></div><video controls playsinline preload="none" data-full-trailer aria-label="Trailer completo di NERO, con data finale"><source src="{{ asset('assets/nero/trailer-nero.mp4') }}" type="video/mp4"></video></dialog>
+<dialog class="trailer-dialog" data-trailer-dialog aria-labelledby="trailer-title"><div class="dialog-header"><h2 id="trailer-title" class="sr-only">Il video di {{ $project['title'] }}</h2><button type="button" data-close-trailer autofocus aria-label="Chiudi il video"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19"/></svg></button></div><video controls playsinline preload="none" data-full-trailer aria-label="Trailer completo di {{ $project['title'] }}"><source src="{{ asset('assets/nero/trailer-nero.mp4') }}" type="video/mp4"></video></dialog>
 @endsection

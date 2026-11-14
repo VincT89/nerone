@@ -4,9 +4,12 @@
     <div>
         <dt>Candidature online</dt>
         @if($isUpcoming)
-            <dd>Dal <x-casting-opening-time :opens-at="$opensAt" /></dd>
+            <dd>
+                Dal <x-casting-opening-time :opens-at="$opensAt" />
+                @if($deadline) al <x-casting-opening-time :opens-at="$deadline" :show-time="false" />@endif
+            </dd>
         @elseif($isOpen)
-            <dd>Aperte @if($deadline) fino al <x-casting-opening-time :opens-at="$deadline" :show-time="true" />@endif</dd>
+            <dd>Aperte @if($deadline) fino al <x-casting-opening-time :opens-at="$deadline" :show-time="false" />@endif</dd>
         @else
             <dd>Chiuse</dd>
         @endif

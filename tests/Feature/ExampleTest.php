@@ -14,8 +14,17 @@ class ExampleTest extends TestCase
      */
     public function test_the_application_returns_a_successful_response(): void
     {
-        $response = $this->get('/');
+        $this->get('/')->assertOk()
+            ->assertSee('Musical<br>Experience', false)
+            ->assertSee('NERO!')
+            ->assertSee('NERO! è il nuovo musical in lingua inglese dedicato a Nerone e alla Roma del grande incendio.')
+            ->assertSee('Uno spettacolo originale, in preparazione a Roma, che racconta l’uomo, l’imperatore e il mito attraverso la musica e il teatro.')
+            ->assertSee('Le candidature per le audizioni si presentano esclusivamente online, compilando il')
+            ->assertSeeInOrder(['Direzione tecnica', 'Direzione artistica', 'Laccio e Ernesto Migliacci'])
+            ->assertSee('href="mailto:info@neromusical.com"', false);
 
-        $response->assertStatus(200);
+        $this->get('/candidati')->assertOk()
+            ->assertSee('Audizione online per il cast di NERO!')
+            ->assertSee('href="mailto:info@neromusical.com"', false);
     }
 }

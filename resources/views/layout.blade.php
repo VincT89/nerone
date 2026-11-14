@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="NERO! Nuovo musical in preparazione a Roma. Informazioni su audizioni, profili ricercati e candidature online.">
-    <title>@yield('title', 'Il progetto') · NERO</title>
+    <title>@yield('title', 'Il progetto') · {{ config('casting.project.title') }}</title>
     <link rel="icon" href="data:,">
     <link rel="preload" href="{{ asset('assets/nero/progetto-neue.woff2') }}?v=4" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="{{ asset('assets/site.css') }}">
@@ -38,8 +38,19 @@
     </header>
     <main id="main">@yield('content')</main>
     <footer class="site-footer footer-layout{{ $__env->hasSection('entry-film')?' has-film':'' }}{{ $__env->hasSection('casting-nav')?' is-production':'' }}">
-        @hasSection('casting-nav')<p class="operator-footer">Materiale riservato alla produzione</p>@else<p>NERO</p>@endif
-        <nav aria-label="Informazioni e accesso">@hasSection('entry-film')<button class="footer-film" type="button" data-open-trailer>Rivedi il video</button>@endif<div class="footer-legal"><a href="{{ route('privacy') }}">Privacy</a><a href="{{ route('cookies') }}">Cookie</a></div>@if(!$__env->hasSection('casting-nav'))<a class="reserved-area" href="{{ route('login') }}" target="_blank" rel="noopener">Area riservata</a>@endif<a href="#top" class="footer-top footer-top-control" aria-label="Torna all’inizio della pagina" title="Torna su"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 11 6-6 6 6M12 5v14"/></svg></a></nav>
+        @hasSection('casting-nav')<p class="operator-footer">Materiale riservato alla produzione</p>@else<p>{{ config('casting.project.title') }}</p>@endif
+        <nav aria-label="Informazioni e accesso">
+            @hasSection('entry-film')<button class="footer-film" type="button" data-open-trailer>Rivedi il video</button>@endif
+            <div class="footer-legal">
+                <a href="{{ route('privacy') }}">Privacy</a>
+                <a href="{{ route('cookies') }}">Cookie</a>
+                @if(!$__env->hasSection('casting-nav'))
+                    <a class="footer-contact" href="mailto:{{ config('casting.project.contact_email') }}">{{ config('casting.project.contact_email') }}</a>
+                @endif
+            </div>
+            @if(!$__env->hasSection('casting-nav'))<a class="reserved-area" href="{{ route('login') }}" target="_blank" rel="noopener">Area riservata</a>@endif
+            <a href="#top" class="footer-top footer-top-control" aria-label="Torna all’inizio della pagina" title="Torna su"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 11 6-6 6 6M12 5v14"/></svg></a>
+        </nav>
     </footer>
 </div>
 <a class="back-to-top back-to-top-control" href="#top" data-back-top hidden aria-label="Torna all’inizio della pagina" title="Torna su"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 11 6-6 6 6M12 5v14"/></svg></a>

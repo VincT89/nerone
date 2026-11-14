@@ -11,8 +11,9 @@ return [
     'admin_password'=>env('CASTING_ADMIN_PASSWORD'),
     'privacy'=>['controller'=>'Nero Musical srl','contact'=>null],
     'project'=>[
-        'title'=>'NERO',
-        'description'=>'NERO! è un nuovo musical in preparazione a Roma.',
+        'title'=>'NERO!',
+        'description'=>'NERO! è il nuovo musical in lingua inglese dedicato a Nerone e alla Roma del grande incendio. Uno spettacolo originale, in preparazione a Roma, che racconta l’uomo, l’imperatore e il mito attraverso la musica e il teatro.',
+        'contact_email'=>'info@neromusical.com',
         'opening_date'=>'2026-11-17',
         'audition_city'=>'Roma',
         'audition_month'=>'2026-12',
@@ -34,6 +35,7 @@ return [
             ['role'=>'Scenografia','name'=>'Francesco Mari'],
             ['role'=>'Costumi','name'=>'Maria Sabato'],
             ['role'=>'Direzione tecnica','name'=>'Lucio Mazzoli'],
+            ['role'=>'Direzione artistica','name'=>'Laccio e Ernesto Migliacci'],
         ],
         'production'=>[
             ['role'=>'Produzione','name'=>'Nero Musical srl'],

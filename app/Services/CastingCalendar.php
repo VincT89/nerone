@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Selection;
 use App\Models\SelectionPhase;
 use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 
 class CastingCalendar
 {
@@ -22,11 +23,19 @@ class CastingCalendar
             ->locale('it')->isoFormat('MMMM YYYY');
     }
 
+    public function closingDate(?CarbonInterface $endsAt): ?CarbonImmutable
+    {
+        $closing = $endsAt?->toImmutable()->timezone(self::TIMEZONE);
+
+        /** Le 00:00 e le 23:59 nel campo della scadenza includono tutta la giornata. */
+        return in_array($closing?->format('H:i'), ['00:00', '23:59'], true) ? $closing->endOfDay() : $closing;
+    }
+
     public function status(?Selection $selection): array
     {
         $phase = $selection?->phases->first();
         $opening = $this->openingDate($phase);
-        $deadline = $phase?->ends_at?->toImmutable()->timezone(self::TIMEZONE);
+        $deadline = $this->closingDate($phase?->ends_at);
         $now = CarbonImmutable::now(self::TIMEZONE);
         $enabled = $selection?->is_open === true && $phase !== null
             && ($deadline === null || $deadline->gte($opening));

@@ -1,6 +1,6 @@
-# NERO
+# NERO!
 
-Sito Laravel del musical NERO con presentazione del progetto, candidature online e area riservata alla produzione. Le immagini, i caratteri e il trailer sono serviti da `public/assets`.
+Sito Laravel del musical NERO! con presentazione del progetto, candidature online e area riservata alla produzione. Le immagini, i caratteri e il trailer sono serviti da `public/assets`.
 
 ## Avvio locale
 
@@ -25,7 +25,7 @@ La home e il gestionale caricano direttamente i file in `public/assets` e si apr
 
 ## Candidature
 
-La home e il modulo seguono lo stato, la data di apertura e la scadenza salvati in **Apertura audizioni**. Se il campo di apertura è vuoto, si usa il 17 novembre 2026. Le date e gli orari impostati nel gestionale seguono l'ora italiana. Prima dell'apertura e dopo la chiusura il modulo resta consultabile.
+La home e il modulo seguono lo stato, la data di apertura e la scadenza salvati in **Apertura audizioni**. Se il campo di apertura è vuoto, si usa il 17 novembre 2026. La migrazione inizializza al 2 dicembre 2026 la scadenza della selezione corrente se il campo è vuoto. Il sito mostra il giorno di scadenza. Le scadenze impostate alle 00:00 o alle 23:59 includono tutta la giornata, in ora italiana. Prima dell'apertura e dopo la chiusura il modulo resta consultabile.
 
 La candidatura richiede un self-tape fino a 5 minuti e 100 MB, il curriculum in PDF e due foto recenti. L'invio è protetto da un CAPTCHA locale e limitato a una candidatura completata per connessione ogni ora. Foto, video e documenti vengono conservati nello spazio privato dell'applicazione. Gli operatori autorizzati consultano, filtrano, commentano e votano le candidature. Gli amministratori possono eliminarle con conferma esplicita. Se un allegato non viene rimosso, la cancellazione resta in sospeso e si può riprendere dal gestionale.
 

@@ -2,6 +2,7 @@
 namespace Tests\Feature;
 use App\Models\{Audition,AuditionComment,AuditionVote,Candidate,CandidateMessage,Selection,User};
 use App\Services\SelfTapeCompression;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\{Auth,Crypt,DB,Hash,Storage};
@@ -21,6 +22,7 @@ class CandidateWorkflowTest extends TestCase {
             'casting.upload_attempts_per_quarter_hour'=>100,
             'casting.project.opening_date'=>'2026-11-01',
         ]);
+        $this->travelTo(CarbonImmutable::parse('2026-11-17 12:00', 'Europe/Rome'));
     }
     /** Le migrazioni di prova non devono mai raggiungere il database delle candidature locali. */
     protected function beforeRefreshingDatabase(){if(config('database.default')!=='sqlite' || DB::connection()->getDatabaseName()!==':memory:')throw new \RuntimeException('Le prove richiedono SQLite in memoria.');}
@@ -116,6 +118,48 @@ class CandidateWorkflowTest extends TestCase {
         } finally {
             $this->travelBack();
         }
+    }
+
+    public function test_public_deadline_follows_the_management_calendar_including_the_last_day(): void
+    {
+        config(['casting.project.opening_date'=>'2026-11-17']);
+        $phase = Selection::latest('id')->firstOrFail()->phases()->firstOrFail();
+        $this->assertSame('2026-12-02 22:59:59', $phase->ends_at->toDateTimeString());
+        $phase->update(['ends_at'=>'2026-12-01 23:00:00']);
+
+        $this->travelTo(CarbonImmutable::parse('2026-11-16 12:00', 'Europe/Rome'));
+        foreach (['/', '/candidati'] as $path) {
+            $this->get($path)->assertOk()
+                ->assertSeeInOrder(['17 novembre 2026', '2 dicembre 2026'])
+                ->assertDontSee('alle 00:00')
+                ->assertDontSee('(ora italiana)');
+        }
+
+        $this->travelTo(CarbonImmutable::parse('2026-12-02 23:59:59.999999', 'Europe/Rome'));
+        $this->get('/candidati')->assertOk()->assertViewHas('isOpen', true);
+        $this->assertTrue(Selection::latest('id')->firstOrFail()->acceptsApplications());
+
+        $this->travelTo(CarbonImmutable::parse('2026-12-03 00:00', 'Europe/Rome'));
+        $this->get('/')->assertOk()->assertSee('Candidature chiuse');
+        $this->get('/candidati')->assertOk()->assertDontSee('data-local-captcha', false);
+        $this->post('/candidati', $this->payload())->assertSessionHasErrors('selection_id');
+        $this->assertDatabaseCount('auditions', 0);
+
+        $this->actingAs($this->operator(true))->patch(route('casting.settings.update'), [
+            'title'=>'Audizioni', 'is_open'=>1, 'ends_at'=>'2026-12-05T18:30',
+        ])->assertRedirect()->assertSessionHasNoErrors();
+        foreach (['/', '/candidati'] as $path) {
+            $this->get($path)->assertOk()->assertSee('5 dicembre 2026')
+                ->assertDontSee('2 dicembre 2026')->assertDontSee('alle 18:30');
+        }
+
+        $this->travelTo(CarbonImmutable::parse('2026-12-05 18:30:01', 'Europe/Rome'));
+        $this->get('/candidati')->assertOk()->assertViewHas('isOpen', false);
+
+        $this->patch(route('casting.settings.update'), [
+            'title'=>'Audizioni', 'is_open'=>1, 'starts_at'=>'2026-12-05T09:00', 'ends_at'=>'2026-12-05T00:00',
+        ])->assertRedirect()->assertSessionHasNoErrors();
+        $this->get('/candidati')->assertOk()->assertViewHas('isOpen', true);
     }
 
     public function test_intake_requires_a_self_tape_cv_photos_and_declaration(): void {

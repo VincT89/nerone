@@ -10,13 +10,13 @@
         <figure class="application-photo"><img src="{{ asset('assets/nero/teatro.jpg') }}" width="2000" height="1333" alt="Palcoscenico e platea di un grande teatro" fetchpriority="high"></figure>
         <div class="application-intro-copy">
             <h1>Scheda di candidatura</h1>
-            <p>Audizione online per il cast di NERO.</p>
+            <p>Audizione online per il cast di {{ $project['title'] }}</p>
             @if($isUpcoming)
                 <p class="intro-note"><strong>Candidature dal <x-casting-opening-time :opens-at="$opensAt" /></strong></p>
             @elseif(!$isOpen)
                 <p class="intro-note"><strong>Candidature chiuse</strong></p>
             @elseif($deadline)
-                <p class="intro-note"><strong>Scadenza candidature</strong><br><x-casting-opening-time :opens-at="$deadline" :show-time="true" /></p>
+                <p class="intro-note"><strong>Scadenza candidature</strong><br><x-casting-opening-time :opens-at="$deadline" :show-time="false" /></p>
             @endif
             <nav class="application-index" aria-label="Sezioni della candidatura">
                 <a href="#dati-personali">Dati personali</a>
