@@ -52,6 +52,16 @@
             <a href="#top" class="footer-top footer-top-control" aria-label="Torna all’inizio della pagina" title="Torna su"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 11 6-6 6 6M12 5v14"/></svg></a>
         </nav>
     </footer>
+    @unless($__env->hasSection('casting-nav') || request()->routeIs('privacy', 'cookies'))
+        <aside class="cookie-notice" lang="en" aria-label="Cookie notice" data-cookie-notice hidden>
+            <p>We use essential cookies to operate this website and secure the application form.</p>
+            <div class="cookie-notice-links">
+                <a href="{{ route('cookies') }}">Cookie Policy</a>
+                <a href="{{ route('privacy') }}">Privacy Policy</a>
+            </div>
+            <button type="button" data-cookie-dismiss>Close</button>
+        </aside>
+    @endunless
 </div>
 <a class="back-to-top back-to-top-control" href="#top" data-back-top hidden aria-label="Torna all’inizio della pagina" title="Torna su"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 11 6-6 6 6M12 5v14"/></svg></a>
 </body>

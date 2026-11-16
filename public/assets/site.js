@@ -106,6 +106,41 @@
     update();start();
 })();
 
+/** Il browser ricorda la chiusura dell’avviso anche nelle visite successive. */
+(() => {
+    const notice = document.querySelector('[data-cookie-notice]');
+    if (!notice) return;
+
+    const key = 'nero_cookie_notice';
+    let dismissed = false;
+
+    function updateNotice() {
+        try { dismissed ||= localStorage.getItem(key) === '1'; } catch {}
+        notice.hidden = dismissed;
+    }
+
+    notice.querySelector('[data-cookie-dismiss]').addEventListener('click', () => {
+        dismissed = true;
+        notice.hidden = true;
+        try { localStorage.setItem(key, '1'); } catch {}
+    });
+    addEventListener('pageshow', updateNotice);
+    addEventListener('storage', event => {
+        if (event.key === key) updateNotice();
+    });
+    updateNotice();
+
+    /** Lo spazio per l’avviso segue l’altezza effettiva del testo e dei controlli. */
+    if ('ResizeObserver' in window) {
+        const root = document.documentElement;
+        new ResizeObserver(() => {
+            const height = notice.offsetHeight;
+            root.style.setProperty('--cookie-notice-height', `${height}px`);
+            root.classList.toggle('cookie-notice-visible', height > 0);
+        }).observe(notice);
+    }
+})();
+
 /** Il trailer richiesto dall'utente usa il dialogo nativo e si arresta alla chiusura. */
 (() => {
     const dialog = document.querySelector('[data-trailer-dialog]');

@@ -22,8 +22,9 @@
         </div>
     </dl>
 
-    <h2>Memoria della scheda del browser</h2>
+    <h2>Memoria del browser</h2>
     <p>La voce tecnica <code>nero_ingresso</code>, salvata in <code>sessionStorage</code>, ricorda che hai già aperto il progetto per evitare di ripetere il video introduttivo nella stessa scheda. La voce contiene solo un indicatore di apertura e viene eliminata quando termina la sessione della scheda. Puoi entrare nel progetto anche usando il collegamento presente nel video.</p>
+    <p>Quando chiudi l’avviso con il pulsante «<span lang="en">Close</span>», la voce <code>nero_cookie_notice</code> viene salvata in <code>localStorage</code> per ricordare la chiusura nelle visite successive. Puoi rimuoverla cancellando i dati del sito nel browser.</p>
 
     <h2>Profilazione e servizi esterni</h2>
     <p>Il portale non usa cookie pubblicitari, strumenti di profilazione o servizi di analisi del traffico. L’applicazione serve direttamente caratteri, immagini e video.</p>
