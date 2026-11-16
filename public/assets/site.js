@@ -1,4 +1,4 @@
-/** L'ingresso conserva il finale originale; i comandi restano disponibili da tastiera senza sovrapposizioni sul film. */
+/** I comandi del trailer d’ingresso restano disponibili da tastiera senza sovrapposizioni sul film. */
 (() => {
     const entry = document.querySelector('[data-entry-film]');
     const film = document.querySelector('[data-entry-video]');

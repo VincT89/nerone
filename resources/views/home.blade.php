@@ -1,8 +1,9 @@
 @extends('layout')
 @section('title','Il progetto')
 @section('body-class','nero-home cinema-home')
+@php($trailerUrl = asset('assets/nero/trailer-nero.mp4').'?v='.filemtime(public_path('assets/nero/trailer-nero.mp4')))
 @section('entry-film')
-<section class="entry-film" data-entry-film aria-label="Ingresso video al progetto" tabindex="-1"><h2 class="sr-only" id="entry-title">Il trailer di {{ $project['title'] }}</h2><p class="sr-only" id="entry-help">Tocca il video per attivare l’audio o mettere in pausa. Da tastiera: Spazio per la riproduzione, M per l’audio, Esc per entrare nel sito.</p><video id="entry-video" data-entry-video controls playsinline preload="auto" poster="{{ asset('assets/nero/ingresso.jpg') }}" aria-label="Trailer completo di {{ $project['title'] }}" aria-describedby="entry-help"><source src="{{ asset('assets/nero/trailer-nero.mp4') }}" type="video/mp4"></video><a class="film-skip" href="#progetto" data-enter-landing>Salta</a><div class="entry-progress"><progress max="100" value="0" data-entry-buffer aria-label="Caricamento del video"></progress><progress max="100" value="0" data-entry-progress aria-label="Avanzamento del video"></progress></div></section>
+<section class="entry-film" data-entry-film aria-label="Ingresso video al progetto" tabindex="-1"><h2 class="sr-only" id="entry-title">Il trailer di {{ $project['title'] }}</h2><p class="sr-only" id="entry-help">Tocca il video per attivare l’audio o mettere in pausa. Da tastiera: Spazio per la riproduzione, M per l’audio, Esc per entrare nel sito.</p><video id="entry-video" data-entry-video controls playsinline preload="auto" poster="{{ asset('assets/nero/ingresso.jpg') }}" aria-label="Trailer completo di {{ $project['title'] }}" aria-describedby="entry-help"><source src="{{ $trailerUrl }}" type="video/mp4"></video><a class="film-skip" href="#progetto" data-enter-landing>Salta</a><div class="entry-progress"><progress max="100" value="0" data-entry-buffer aria-label="Caricamento del video"></progress><progress max="100" value="0" data-entry-progress aria-label="Avanzamento del video"></progress></div></section>
 @endsection
 @section('content')
 <section class="roma-cover landing-panel" id="progetto" aria-labelledby="project-title">
@@ -77,5 +78,5 @@
     </div>
 </section>
 
-<dialog class="trailer-dialog" data-trailer-dialog aria-labelledby="trailer-title"><div class="dialog-header"><h2 id="trailer-title" class="sr-only">Il video di {{ $project['title'] }}</h2><button type="button" data-close-trailer autofocus aria-label="Chiudi il video"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19"/></svg></button></div><video controls playsinline preload="none" data-full-trailer aria-label="Trailer completo di {{ $project['title'] }}"><source src="{{ asset('assets/nero/trailer-nero.mp4') }}" type="video/mp4"></video></dialog>
+<dialog class="trailer-dialog" data-trailer-dialog aria-labelledby="trailer-title"><div class="dialog-header"><h2 id="trailer-title" class="sr-only">Il video di {{ $project['title'] }}</h2><button type="button" data-close-trailer autofocus aria-label="Chiudi il video"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19"/></svg></button></div><video controls playsinline preload="none" data-full-trailer aria-label="Trailer completo di {{ $project['title'] }}"><source src="{{ $trailerUrl }}" type="video/mp4"></video></dialog>
 @endsection
