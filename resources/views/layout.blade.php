@@ -30,7 +30,7 @@
                 <a class="nav-context" href="{{ route('casting.index') }}">Produzione</a><div class="nav-links"><form method="post" action="{{ route('casting.logout') }}">@csrf<button class="text-button" type="submit">Esci</button></form></div>
             @else
                 @yield('public-nav-start')
-                @unless(request()->routeIs('audition.apply'))
+                @unless(request()->routeIs('audition.apply') || !request()->attributes->get('siteAccessible', true))
                     <div class="nav-links"><a class="nav-apply" href="{{ route('audition.apply') }}">Candidati</a></div>
                 @endunless
             @endif

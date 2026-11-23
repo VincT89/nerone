@@ -8,6 +8,7 @@ return [
         'text'=>'Confermo che le informazioni fornite sono corrette e di essere autorizzato/a a presentare tutti i materiali inclusi nella candidatura.',
     ],
     'local_access_only'=>(bool)env('CASTING_LOCAL_ACCESS_ONLY',true),
+    'site_access_password'=>env('SITE_ACCESS_PASSWORD',''),
     'admin_password'=>env('CASTING_ADMIN_PASSWORD'),
     'privacy'=>['controller'=>'Nero Musical srl','contact'=>null],
     'project'=>[

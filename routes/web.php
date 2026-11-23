@@ -1,7 +1,10 @@
 <?php
 use App\Http\Controllers\{AuditionController,AuditionReviewController,CastingAuthController,ProductionTeamController,SingleSelectionController,UnifiedAuthController,MaterialController};
 use App\Http\Middleware\CastingAccess;
+use App\Http\Controllers\SiteAccessController;
 use Illuminate\Support\Facades\Route;
+Route::redirect('/accesso-sito','/')->name('site.access');
+Route::post('/accesso-sito',[SiteAccessController::class,'enter'])->middleware('throttle:5,1,site-access')->name('site.access.enter');
 Route::get('/',[AuditionController::class,'home'])->name('home');
 Route::get('/candidati',[AuditionController::class,'apply'])->middleware('throttle:30,1,captcha-form')->name('audition.apply');
 Route::post('/candidati/captcha',[\App\Http\Controllers\LocalCaptchaController::class,'renew'])->middleware('throttle:15,1,captcha-renew')->name('audition.captcha.renew');

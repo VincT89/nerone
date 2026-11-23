@@ -49,6 +49,10 @@ Gli amministratori possono creare account, modificare nome ed email e assegnare 
 
 Configurare il sottodominio affinché esponga solo `public`. Impostare `APP_ENV=production`, `APP_DEBUG=false` e `APP_URL` con l'indirizzo HTTPS effettivo. Rendere scrivibili da PHP `storage` e `bootstrap/cache` e mantenere gli allegati fuori dalla cartella pubblica.
 
+Per proteggere il sito durante l'attesa della pubblicazione, impostare una password privata in `SITE_ACCESS_PASSWORD` nel `.env` del server. Il pubblico vede una pagina nera con il campo password. Un accesso corretto sblocca il sito per la sessione corrente. La password non viene salvata nella sessione e cambiarla richiede un nuovo accesso. Sono consentiti cinque tentativi al minuto per connessione. Il login della produzione e le informative restano accessibili.
+
+Per pubblicare il sito, svuotare `SITE_ACCESS_PASSWORD` sul server e aggiornare l'eventuale cache con `php artisan config:clear`. Il deploy del codice conserva la scelta del `.env`. Per ricevere candidature, configurare anche **Apertura audizioni**.
+
 Verificare la versione PHP effettiva del sottodominio e quella usata dalle attività pianificate. Le release ufficiali 8.4.27 e 8.5.12 includono le correzioni per CVE-2026-109618 e CVE-2026-109619. Per una build con correzioni applicate dal fornitore, verificare il relativo avviso. [Changelog PHP](https://www.php.net/ChangeLog-8.php#8.4.27)
 
 Per l'invio dei provini, impostare almeno `upload_max_filesize=100M` e `post_max_size=160M` e controllare anche il limite del server web. FFmpeg deve essere disponibile al processo PHP, tramite PATH o `CASTING_FFMPEG_BINARY`.
