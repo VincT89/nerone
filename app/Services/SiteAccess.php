@@ -8,7 +8,8 @@ class SiteAccess
 {
     public function isEnabled(): bool
     {
-        return (string) config('casting.site_access_password', '') !== '';
+        /** La variabile assente mantiene il blocco; soltanto un valore esplicitamente vuoto pubblica il sito. */
+        return config('casting.site_access_password') !== '';
     }
 
     public function allows(Request $request): bool
@@ -18,8 +19,9 @@ class SiteAccess
         }
 
         $grant = $request->session()->get('site_access_granted');
+        $password = config('casting.site_access_password');
 
-        return is_string($grant) && hash_equals($this->fingerprint((string) config('casting.site_access_password')), $grant);
+        return is_string($password) && is_string($grant) && hash_equals($this->fingerprint($password), $grant);
     }
 
     public function unlock(Request $request, string $password): bool
@@ -28,7 +30,12 @@ class SiteAccess
             return true;
         }
 
-        $expected = $this->fingerprint((string) config('casting.site_access_password'));
+        $configured = config('casting.site_access_password');
+        if (!is_string($configured)) {
+            return false;
+        }
+
+        $expected = $this->fingerprint($configured);
         if (!hash_equals($expected, $this->fingerprint($password))) {
             return false;
         }

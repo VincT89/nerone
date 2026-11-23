@@ -49,7 +49,7 @@ Gli amministratori possono creare account, modificare nome ed email e assegnare 
 
 Configurare il sottodominio affinché esponga solo `public`. Impostare `APP_ENV=production`, `APP_DEBUG=false` e `APP_URL` con l'indirizzo HTTPS effettivo. Rendere scrivibili da PHP `storage` e `bootstrap/cache` e mantenere gli allegati fuori dalla cartella pubblica.
 
-Per proteggere il sito durante l'attesa della pubblicazione, impostare una password privata in `SITE_ACCESS_PASSWORD` nel `.env` del server. Il pubblico vede una pagina nera con il campo password. Un accesso corretto sblocca il sito per la sessione corrente. La password non viene salvata nella sessione e cambiarla richiede un nuovo accesso. Sono consentiti cinque tentativi al minuto per connessione. Il login della produzione e le informative restano accessibili.
+Per proteggere il sito durante l'attesa della pubblicazione, impostare una password privata in `SITE_ACCESS_PASSWORD` nel `.env` del server. Il pubblico vede una pagina nera con il campo password. Un accesso corretto sblocca il sito per la sessione corrente. La password non viene salvata in chiaro nella sessione e cambiarla richiede un nuovo accesso. Sono consentiti cinque tentativi al minuto per connessione. Se la variabile manca, il sito resta bloccato in attesa della configurazione. Il login della produzione e le informative restano accessibili.
 
 Per pubblicare il sito, svuotare `SITE_ACCESS_PASSWORD` sul server e aggiornare l'eventuale cache con `php artisan config:clear`. Il deploy del codice conserva la scelta del `.env`. Per ricevere candidature, configurare anche **Apertura audizioni**.
 
@@ -71,6 +71,6 @@ Il titolare indicato è Nero Musical srl. Completare in `config/casting.php` il 
 
 ## Indicizzazione
 
-Con `APP_ENV=production` la home, la pagina delle candidature e le informative sono indicizzabili. Il login, il gestionale e le ricevute di candidatura restano esclusi tramite `X-Robots-Tag`. Negli ambienti di prova Laravel invia la stessa direttiva su tutte le pagine.
+Con `APP_ENV=production` la home, la pagina delle candidature e le informative sono indicizzabili quando accessibili al pubblico. La pagina di accesso provvisorio, il login, il gestionale e le ricevute di candidatura restano esclusi tramite `X-Robots-Tag`. Negli ambienti di prova Laravel invia la stessa direttiva su tutte le pagine.
 
 Dopo la pubblicazione del sottodominio HTTPS, verificare la proprietà in Google Search Console e richiedere l'indicizzazione della home e della pagina delle candidature. [Richiedere la scansione a Google](https://developers.google.com/search/docs/crawling-indexing/ask-google-to-recrawl)

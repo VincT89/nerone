@@ -68,12 +68,10 @@ class SiteAccessTest extends TestCase
     public function test_wrong_password_stays_private_and_does_not_unlock_the_site(): void
     {
         $attempt = Str::random(32);
-        $this->from('/')->post('/accesso-sito', ['password' => $attempt])
-            ->assertRedirect('/')->assertSessionHasErrors('password')
-            ->assertSessionMissing('site_access_granted')
-            ->assertSessionMissing('_old_input.password');
-        $this->get('/')->assertSessionHasErrors('password')->assertViewIs('site-access')->assertSee('Password non corretta.')
-            ->assertDontSee($attempt)->assertDontSee($this->sitePassword);
+        $this->followingRedirects()->from('/')->post('/accesso-sito', ['password' => $attempt])
+            ->assertOk()->assertViewIs('site-access')->assertSee('Password non corretta.')
+            ->assertDontSee($attempt)->assertDontSee($this->sitePassword)
+            ->assertSessionMissing('site_access_granted')->assertSessionMissing('_old_input.password');
     }
 
     public function test_a_correct_password_unlocks_the_site_but_does_not_grant_a_production_account(): void
@@ -98,6 +96,16 @@ class SiteAccessTest extends TestCase
         config(['casting.site_access_password' => Str::random(32)]);
         $this->get('/')->assertViewIs('site-access');
         $this->get('/candidati')->assertViewIs('site-access');
+    }
+
+    public function test_a_missing_server_setting_keeps_the_site_locked(): void
+    {
+        config(['casting.site_access_password' => null]);
+        $this->get('/')->assertOk()->assertViewIs('site-access');
+        $this->from('/')->post('/accesso-sito', ['password' => $this->sitePassword])
+            ->assertRedirect('/')->assertSessionHasErrors('password')
+            ->assertSessionMissing('site_access_granted');
+        $this->get('/login')->assertOk();
     }
 
     public function test_the_session_grant_cannot_be_forged_with_the_password_or_another_string(): void

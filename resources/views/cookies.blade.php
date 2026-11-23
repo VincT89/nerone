@@ -6,7 +6,7 @@
 @section('content')
 <article class="legal-page">
     <h1>Cookie policy</h1>
-    <p>Il portale usa cookie tecnici di prima parte per far funzionare i moduli, proteggere le richieste e gestire l’accesso all’area casting.</p>
+    <p>Il portale usa cookie tecnici di prima parte per far funzionare i moduli, proteggere le richieste e gestire l’accesso riservato al sito e all’area casting.</p>
 
     <h2>Cookie utilizzati</h2>
     <dl class="legal-cookies">
