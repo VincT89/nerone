@@ -16,6 +16,9 @@
     <link rel="stylesheet" href="{{ asset('assets/production.css') }}?v={{ filemtime(public_path('assets/production.css')) }}">
     <link rel="stylesheet" href="{{ asset('assets/nero.css') }}?v={{ filemtime(public_path('assets/nero.css')) }}">
     <link rel="stylesheet" href="{{ asset('assets/nero-actions.css') }}?v={{ filemtime(public_path('assets/nero-actions.css')) }}">
+    @if(request()->attributes->get('siteAccessProtected'))
+        <script src="{{ asset('assets/site-visit.js') }}?v={{ filemtime(public_path('assets/site-visit.js')) }}" defer></script>
+    @endif
     <script src="{{ asset('assets/site.js') }}?v={{ filemtime(public_path('assets/site.js')) }}" defer></script>
     <script src="{{ asset('assets/reviews.js') }}?v={{ filemtime(public_path('assets/reviews.js')) }}" defer></script>
 </head>

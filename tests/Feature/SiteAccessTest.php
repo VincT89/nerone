@@ -84,7 +84,8 @@ class SiteAccessTest extends TestCase
         $this->assertSame(64, strlen($grant));
         $this->assertGuest();
         $this->get('/')->assertOk()->assertViewIs('home')->assertSee('data-entry-video', false);
-        $this->get('/candidati')->assertOk()->assertViewIs('apply')->assertSee('name="self_tape"', false);
+        $this->withHeader('Referer', route('home'))->get('/candidati')
+            ->assertOk()->assertViewIs('apply')->assertSee('name="self_tape"', false);
         $this->get('/casting')->assertRedirect(route('login'));
     }
 
@@ -96,6 +97,75 @@ class SiteAccessTest extends TestCase
         config(['casting.site_access_password' => Str::random(32)]);
         $this->get('/')->assertViewIs('site-access');
         $this->get('/candidati')->assertViewIs('site-access');
+    }
+
+    public function test_new_direct_visits_require_the_password_again_in_the_same_session(): void
+    {
+        foreach (['/', '/candidati'] as $path) {
+            $this->post('/accesso-sito', ['password' => $this->sitePassword])->assertRedirect(route('home'));
+            $this->get('/')->assertViewIs('home');
+            $this->get($path)->assertOk()->assertViewIs('site-access')
+                ->assertSessionMissing('site_access_granted');
+        }
+    }
+
+    public function test_internal_navigation_remains_available_for_the_current_visit(): void
+    {
+        $this->post('/accesso-sito', ['password' => $this->sitePassword])->assertRedirect();
+        $this->get('/')->assertViewIs('home')->assertHeader('X-Robots-Tag', 'noindex, nofollow');
+
+        $previous = '/';
+        foreach (['/candidati', '/privacy', '/cookie', '/'] as $path) {
+            $this->withHeaders(['Referer' => url($previous), 'Sec-Fetch-Site' => 'same-origin'])->get($path)
+                ->assertOk()->assertDontSee('data-site-access-form', false);
+            $previous = $path;
+        }
+
+        $this->withHeader('Referer', route('home'))->get('/')->assertViewIs('site-access');
+    }
+
+    public function test_returning_from_another_site_starts_a_new_visit(): void
+    {
+        $this->post('/accesso-sito', ['password' => $this->sitePassword])->assertRedirect();
+        $this->get('/')->assertViewIs('home');
+        $this->withHeaders(['Referer' => 'https://example.test/', 'Sec-Fetch-Site' => 'cross-site'])->get('/candidati')
+            ->assertViewIs('site-access')->assertSessionMissing('site_access_granted');
+    }
+
+    public function test_legal_pages_do_not_keep_an_old_visit_unlocked_when_opened_directly(): void
+    {
+        $this->post('/accesso-sito', ['password' => $this->sitePassword])->assertRedirect();
+        $this->get('/')->assertViewIs('home');
+        $this->get('/privacy')->assertOk()->assertSessionMissing('site_access_granted');
+        $this->withHeader('Referer', route('privacy'))->get('/')->assertViewIs('site-access');
+    }
+
+    public function test_reloading_or_restoring_a_page_requires_a_new_password(): void
+    {
+        $this->post('/accesso-sito', ['password' => $this->sitePassword])->assertRedirect();
+        $this->get('/')->assertViewIs('home');
+        $this->withHeader('Referer', route('home'))->get('/')->assertViewIs('site-access');
+
+        $this->post('/accesso-sito', ['password' => $this->sitePassword])->assertRedirect();
+        $this->get('/')->assertViewIs('home');
+        $this->withHeader('Referer', route('home'))->get('/candidati?_site_entry=1')->assertViewIs('site-access');
+    }
+
+    public function test_intake_validation_redirects_keep_the_current_visit_unlocked(): void
+    {
+        $this->post('/accesso-sito', ['password' => $this->sitePassword])->assertRedirect();
+        $this->get('/')->assertViewIs('home');
+        $this->withHeader('Referer', route('home'))->get('/candidati')->assertViewIs('apply');
+
+        $this->followingRedirects()->from('/candidati')->post('/candidati', [])
+            ->assertOk()->assertViewIs('apply')->assertSee('name="self_tape"', false);
+        $this->assertSessionHas('site_access_granted');
+    }
+
+    public function test_navigation_headers_do_not_authenticate_a_visitor(): void
+    {
+        $this->withHeaders(['Referer' => route('home'), 'Sec-Fetch-Site' => 'same-origin'])->get('/candidati')
+            ->assertOk()->assertViewIs('site-access');
     }
 
     public function test_a_missing_server_setting_keeps_the_site_locked(): void
