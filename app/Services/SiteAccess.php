@@ -31,7 +31,8 @@ class SiteAccess
         }
 
         $redirect = $request->session()->pull('site_access_redirect');
-        if (!$request->boolean('_site_entry') && ($redirect === $request->getPathInfo() || $this->isInternalNavigation($request))) {
+        $reload = preg_match('/(?:^|,)\s*(?:no-cache|max-age\s*=\s*0)\s*(?:,|$)/i', $request->headers->get('Cache-Control', '')) === 1;
+        if (!$request->boolean('_site_entry') && ($redirect === $request->getPathInfo() || (!$reload && $this->isInternalNavigation($request)))) {
             return;
         }
 

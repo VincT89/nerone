@@ -151,6 +151,16 @@ class SiteAccessTest extends TestCase
         $this->withHeader('Referer', route('home'))->get('/candidati?_site_entry=1')->assertViewIs('site-access');
     }
 
+    public function test_a_reload_is_locked_even_if_the_browser_repeats_the_previous_page_referrer(): void
+    {
+        foreach (['max-age=0', 'no-cache'] as $cacheControl) {
+            $this->post('/accesso-sito', ['password' => $this->sitePassword])->assertRedirect();
+            $this->get('/')->assertViewIs('home');
+            $this->withHeaders(['Referer' => route('privacy'), 'Sec-Fetch-Site' => 'same-origin', 'Cache-Control' => $cacheControl])
+                ->get('/')->assertViewIs('site-access');
+        }
+    }
+
     public function test_intake_validation_redirects_keep_the_current_visit_unlocked(): void
     {
         $this->post('/accesso-sito', ['password' => $this->sitePassword])->assertRedirect();
@@ -158,8 +168,8 @@ class SiteAccessTest extends TestCase
         $this->withHeader('Referer', route('home'))->get('/candidati')->assertViewIs('apply');
 
         $this->followingRedirects()->from('/candidati')->post('/candidati', [])
-            ->assertOk()->assertViewIs('apply')->assertSee('name="self_tape"', false);
-        $this->assertSessionHas('site_access_granted');
+            ->assertOk()->assertViewIs('apply')->assertSee('name="self_tape"', false)
+            ->assertSessionHas('site_access_granted');
     }
 
     public function test_navigation_headers_do_not_authenticate_a_visitor(): void
